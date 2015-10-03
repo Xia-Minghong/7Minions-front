@@ -1,0 +1,93 @@
+<!-- Title for header bar (refer to www/index.html) the bar is hidden-->
+<ion-view title="Event Details" hide-nav-bar="true">
+  <!-- ======================
+  GEMIONIC CONTENT
+  ====================== -->
+  <ion-content class="gem-ion-content single-post">
+    <!-- Post media (sidebar button, picture, tags, and title) -->
+    <div class="gem-post-media">
+
+      <!-- .topbar: sidebar button, post title, and post tags - overlaps the post-image further down -->
+      <div class="topbar">
+        <div class="row">
+          <div class="col col-25">
+            <button menu-toggle="left" class="button button-small button-icon icon ion-chevron-left gem-white"></button>
+          </div>
+          <div class="col col-75 gem-text-right gem-white">
+            <span class="gem-label warning">Tag1</span>
+            <span class="gem-label success">Tag2</span>
+            <span class="gem-label danger">Tag3</span>
+            <span class="gem-label default">Tag4</span>
+            <span class="gem-label primary">Tag5</span>
+          </div>
+          <div class="col col-25">
+            <button menu-toggle="left" class="button button-small button-icon icon ion-navicon-round gem-white"></button>
+          </div>
+          <div class="col col-50 text-center gem-white">
+            <h4>Open Post</h4>
+          </div>
+          <div class="col col-25 gem-text-right gem-white">
+            <button class="button button-small button-icon icon ion-search gem-white"></button>
+          </div>
+        </div>
+      </div>
+      <!-- end topbar -->
+
+      <!-- post image -->
+      <img src="img/gemionic/post-img.jpg" alt="" class="fluid-image">
+
+      <!-- some stats (likes, hearts) -->
+      <h1 class="button-white post-stat text-center"><a class="button-white"><i class="ion-heart gem-white"></i> 352</a></h1>
+      <!-- emd stats -->
+
+      <!-- bottom shadow - also overlaps the post image -->
+      <div class="bottombar-and-shadow"></div>
+      <!-- end bottom shadow -->
+
+    </div>
+
+    <!-- Post Content -->
+    <div class="gem-post-content">
+      <h2>Event Title</h2>
+      <p>Event Description</p>
+
+      <p class="post-date"><i class="icon ion-clock"></i>  Event Time</p>
+
+      <!-- Article Buttons-->
+      <div class="row article-actions">
+        <button class="button button-small gem-primary uppercase">
+          <i class="icon ion-plus"></i> Register
+        </button>
+        <button class="button button-small gem-success uppercase">
+          <i class="icon ion-heart"></i> Like
+        </button>
+        <!--More Actions-->
+        <!--<div class="button button-small gem-outline">-->
+          <!--<i class="icon ion-more gem-icon"></i>-->
+        <!--</div>-->
+      </div>
+      <!-- End Article Buttons-->
+
+      <!-- Comment Section -->
+      <div class="article-comments">
+        <!-- Comment Item -->
+        <div class="comment-item">
+          <!-- Commenter thumb -->
+          <img src="img/gemionic/profile-image.jpg" alt="" class="comment-profile-pic">
+
+          <!-- Comment Text -->
+          <div class="comment-text">
+            <h4 class="bold">Organizer</h4>
+            <div class="comment">
+              Organizer Description
+            </div>
+          </div>
+          <!-- End Comment Text -->
+        </div>
+          <!-- End Comment item -->
+      </div>
+
+    </div>
+  </ion-content>
+</ion-view>
+

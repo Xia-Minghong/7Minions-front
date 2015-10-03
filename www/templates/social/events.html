@@ -1,0 +1,91 @@
+<!-- Title for the ion view -->
+<ion-view title="Events">
+  <!-- ======================
+  LEFT SIDE BUTTON
+  ====================== -->
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <!-- ======================
+  /END LEFT SIDE BUTTON
+  ====================== -->
+
+  <!-- ======================
+  RIGHT SIDE BUTTON
+  ====================== -->
+  <ion-nav-buttons side="right">
+    <button class="button button-icon icon ion-search"></button>
+  </ion-nav-buttons>
+  <!-- ======================
+  /END RIGHT SIDE BUTTON
+  ====================== -->
+
+  <!-- ======================
+  MAIN CONTENT SECTION
+  ====================== -->
+  <ion-content class="has-header gem-ion-content feed">
+
+    <!-- ======================
+    SEARCH FORM - STANDARD IONIC MARKUP
+    ====================== -->
+    <div class="item item-input-inset">
+      <label class="item-input-wrapper">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="text" placeholder="Search">
+      </label>
+    </div>
+    <!-- ======================
+    /END SEARCH FORM
+    ====================== -->
+    <a class="item padding-bottom">
+      <!-- ======================
+      POST - image only
+      ====================== -->
+      <!--<div class="news-media">-->
+        <!--<img src="img/gemionic/news-image.jpg" alt="" class="fluid-image">-->
+        <!--<div class="media-social-stats">-->
+          <!--<button class="button button-small button-borderless button-positive"><i class="icon ion-heart"></i></button>-->
+        <!--</div>-->
+      <!--</div>-->
+      <div class="news-media">
+        <img src="img/gemionic/news-image-2.jpg" alt="" class="fluid-image">
+        <div class="media-social-stats stat-label"> <!-- Absolutely positioned right. '.news-media' is relative -->
+          <span class="news-comment-summary">
+            <button ng-click="" class="button-clear"><i class="icon ion-heart"></i> 2</button>
+            <button ng-click="" class="button-clear"><i class="icon ion-android-bookmark"></i></button>
+            <!--<i class="icon ion-chatbubble"></i> 3-->
+          </span>
+        </div>
+      </div>
+
+      <!-- ======================
+      POSTER - profile thumb, name and post stats
+      ====================== -->
+      <div class="news-item">
+        <div class="news-thumb">
+          <img src="img/gemionic/profile-image.jpg" alt="" class="img">
+        </div>
+        <div class="news-content">
+          <h2>Event Name</h2>
+          <div class="gem-tiny-text news-item-stats">
+            <h3><i class="icon ion-clock"></i> Event Time</h3>
+            <!--<span class="news-comment-summary">-->
+              <!--<button href="#" class="button-clear"><i class="icon ion-heart"></i> 2</button>-->
+              <!--&lt;!&ndash;<i class="icon ion-chatbubble"></i> 3&ndash;&gt;-->
+            <!--</span>-->
+          </div>
+        </div>
+        <div class="news-more-action">
+          <button class="button-clear padding-right"><h1><i class="icon ion-plus"></i></h1></button>
+        </div>
+      </div>
+      <!-- ======================
+      /END POSTER
+      ====================== -->
+    </a>
+
+  </ion-content>
+  <!-- ======================
+  END MAIN CONTENT SECTION
+  ====================== -->
+</ion-view>
