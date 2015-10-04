@@ -23,7 +23,7 @@
   <!-- ======================
   MAIN CONTENT SECTION
   ====================== -->
-  <ion-content class="has-header gem-ion-content feed">
+  <ion-content class="has-header gem-ion-content feed" ng-init="initEvents()">
 
     <!-- ======================
     SEARCH FORM - STANDARD IONIC MARKUP
@@ -37,7 +37,7 @@
     <!-- ======================
     /END SEARCH FORM
     ====================== -->
-    <a class="item padding-bottom">
+    <div class="item" ng-repeat="event in events">
       <!-- ======================
       POST - image only
       ====================== -->
@@ -48,10 +48,10 @@
         <!--</div>-->
       <!--</div>-->
       <div class="news-media">
-        <img src="img/gemionic/news-image-2.jpg" alt="" class="fluid-image">
+        <a href="#/app/eventdetails/{{ event.id }}"><img src="img/gemionic/news-image-2.jpg" alt="" class="fluid-image"></a>
         <div class="media-social-stats stat-label"> <!-- Absolutely positioned right. '.news-media' is relative -->
           <span class="news-comment-summary">
-            <button ng-click="" class="button-clear"><i class="icon ion-heart"></i> 2</button>
+            <button on-click="alert('123');" class="button-clear"><i class="icon ion-heart"></i> 2</button>
             <button ng-click="" class="button-clear"><i class="icon ion-android-bookmark"></i></button>
             <!--<i class="icon ion-chatbubble"></i> 3-->
           </span>
@@ -65,8 +65,8 @@
         <div class="news-thumb">
           <img src="img/gemionic/profile-image.jpg" alt="" class="img">
         </div>
-        <div class="news-content">
-          <h2>Event Name</h2>
+        <div class="news-content" ng-click="go('/app/eventdetails/{{ event.id }}')">
+          <h2>{{ event.name }}</h2>
           <div class="gem-tiny-text news-item-stats">
             <h3><i class="icon ion-clock"></i> Event Time</h3>
             <!--<span class="news-comment-summary">-->
@@ -82,7 +82,7 @@
       <!-- ======================
       /END POSTER
       ====================== -->
-    </a>
+    </div>
 
   </ion-content>
   <!-- ======================

@@ -17,7 +17,16 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).
     url: '/events',
     views: {
       'menuContent': {
-        templateUrl: 'templates/social/events.html'
+        templateUrl: 'templates/social/events.html',
+        controller: 'eventsCtrl'
+      }
+    }
+  }).state('app.eventdetails', {
+    url: '/eventdetails/{eventId}',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/social/event-details.html',
+        controller: 'eventsCtrl'
       }
     }
   }).state('app.start', {
@@ -104,13 +113,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).
         templateUrl: 'templates/social/view-post.html'
       }
     }
-  }).state('app.eventdetails', {
-    url: '/eventdetails',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/social/event-details.html'
-      }
-    }
   }).state('app.invite', {
     url: '/invite',
     views: {
@@ -128,7 +130,47 @@ App.controllers = angular.module('starter.controllers', []);
 
 App.services = angular.module('starter.services', []);
 
-App.controllers.controller('AppCtrl', function($scope, $ionicModal, $timeout, User) {
+App.services.factory('Event', function($http) {
+  var data, getEvent, getEvents;
+  data = [
+    {
+      "id": 0,
+      "name": "event1"
+    }, {
+      "id": 1,
+      "name": "event2"
+    }
+  ];
+  getEvents = function(filters, callback) {
+    callback(data);
+  };
+  getEvent = function(id, callback) {
+    callback(data[id]);
+  };
+  return {
+    getEvents: getEvents,
+    getEvent: getEvent
+  };
+});
+
+App.services.factory('User', function($http) {
+  var login;
+  login = function(loginData, callback) {
+    alert("do something");
+    callback(true);
+  };
+  return {
+    login: login
+  };
+});
+
+App.controllers.controller('AppCtrl', function($scope, $ionicModal, $ionicHistory, $timeout, $location, User) {
+  $scope.goBack = function() {
+    $ionicHistory.goBack();
+  };
+  $scope.go = function(path) {
+    return $location.path(path);
+  };
   $scope.control = {
     showLogin: true
   };
@@ -167,13 +209,15 @@ App.controllers.controller('AppCtrl', function($scope, $ionicModal, $timeout, Us
   };
 });
 
-App.services.factory('User', function($http) {
-  var login;
-  login = function(loginData, callback) {
-    alert("do something");
-    callback(true);
+App.controllers.controller('eventsCtrl', function($scope, $stateParams, Event) {
+  $scope.initEvents = function() {
+    Event.getEvents([], function(data) {
+      $scope.events = data;
+    });
   };
-  return {
-    login: login
+  $scope.initEvent = function() {
+    Event.getEvent($stateParams.eventId, function(data) {
+      $scope.event = data;
+    });
   };
 });

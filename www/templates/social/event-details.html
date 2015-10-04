@@ -3,7 +3,7 @@
   <!-- ======================
   GEMIONIC CONTENT
   ====================== -->
-  <ion-content class="gem-ion-content single-post">
+  <ion-content class="gem-ion-content single-post" ng-init="initEvent()">
     <!-- Post media (sidebar button, picture, tags, and title) -->
     <div class="gem-post-media">
 
@@ -11,7 +11,8 @@
       <div class="topbar">
         <div class="row">
           <div class="col col-25">
-            <button menu-toggle="left" class="button button-small button-icon icon ion-chevron-left gem-white"></button>
+            <button class="button button-small button-icon icon ion-chevron-left gem-white" ng-click="goBack()"></button>
+            <button menu-toggle="left" class="button button-small button-icon icon ion-navicon gem-white"></button>
           </div>
           <div class="col col-75 gem-text-right gem-white">
             <span class="gem-label warning">Tag1</span>
@@ -48,7 +49,7 @@
 
     <!-- Post Content -->
     <div class="gem-post-content">
-      <h2>Event Title</h2>
+      <h2>{{ event.name }}</h2>
       <p>Event Description</p>
 
       <p class="post-date"><i class="icon ion-clock"></i>  Event Time</p>

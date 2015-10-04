@@ -23,7 +23,19 @@ angular.module('starter', [
 
   .state('app.events',
     url: '/events'
-    views: 'menuContent': templateUrl: 'templates/social/events.html')
+    views:
+      'menuContent':
+        templateUrl: 'templates/social/events.html'
+        controller: 'eventsCtrl'
+  )
+
+  .state('app.eventdetails',
+    url: '/eventdetails/{eventId}'
+    views:
+      'menuContent':
+        templateUrl: 'templates/social/event-details.html'
+        controller: 'eventsCtrl'
+  )
 
   .state('app.start',
     url: '/start'
@@ -72,10 +84,6 @@ angular.module('starter', [
   .state('app.eventdetails2',
     url: '/eventdetails2'
     views: 'menuContent': templateUrl: 'templates/social/view-post.html')
-
-  .state('app.eventdetails',
-    url: '/eventdetails'
-    views: 'menuContent': templateUrl: 'templates/social/event-details.html')
 
   .state 'app.invite',
     url: '/invite'

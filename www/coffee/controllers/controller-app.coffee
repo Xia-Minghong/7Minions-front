@@ -1,4 +1,11 @@
-App.controllers.controller 'AppCtrl', ($scope, $ionicModal, $timeout, User) ->
+App.controllers.controller 'AppCtrl', ($scope, $ionicModal, $ionicHistory, $timeout, $location, User) ->
+
+  $scope.goBack = () ->
+    $ionicHistory.goBack()
+    return
+
+  $scope.go = (path) ->
+      $location.path(path)
 
   # Login and Sign up Control
   $scope.control = showLogin : true
@@ -52,6 +59,7 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicModal, $timeout, User) ->
       return
     ), 1000
     return
+
 
   return
 
