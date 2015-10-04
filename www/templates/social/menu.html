@@ -34,7 +34,7 @@
       </div>
       <!-- End Profile Box -->
       <ion-list>
-        <ion-item class="item-ng-click" nav-clear menu-close ng-click="login()">Login</ion-item>
+        <ion-item class="item-ng-click" nav-clear menu-close ng-click="login()" ng-hide="isLogged()">Login</ion-item>
         <ion-item nav-clear menu-close href="#/app/events">Events</ion-item>
         <!--<ion-item nav-clear menu-close href="#/app/start">Starter View</ion-item>-->
         <ion-item nav-clear menu-close href="#/app/viewpost">View Post (2)</ion-item>
@@ -50,7 +50,7 @@
         <ion-item nav-clear menu-close href="#/app/timeline">Timeline</ion-item>
         <ion-item nav-clear menu-close href="#/app/invite">Invite Friends</ion-item>
         <ion-item nav-clear menu-close href="#/app/news">News</ion-item>
-
+        <ion-item class="item-ng-click" nav-clear ng-click="doLogout()" ng-show="isLogged()">Log Out</ion-item>
 
       </ion-list>
     </ion-content>

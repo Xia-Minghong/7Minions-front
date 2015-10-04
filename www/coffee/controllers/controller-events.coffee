@@ -12,4 +12,22 @@ App.controllers.controller 'eventsCtrl', ($scope, $stateParams, Event) ->
       return
     return
 
+  $scope.likeEvent = (id) ->
+    Event.likeEvent id, (response) ->
+      if response == true
+        return
+      else
+        alert("fail")
+      return
+    return
+
+  $scope.registerEvent = (id) ->
+    Event.registerEvent id, (response) ->
+      if response == true
+        return
+      else
+        alert("fail")
+      return
+    return
+
   return

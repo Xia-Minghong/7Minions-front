@@ -2,7 +2,7 @@
   <ion-header-bar>
     <h1 class="title">Login</h1>
     <div class="buttons">
-      <button class="button button-clear" ng-click="closeLogin()"><i class="icon ion-close-circled"></i></button>
+      <!--<button class="button button-clear" ng-click="closeLogin()"><i class="icon ion-close-circled"></i></button>-->
     </div>
   </ion-header-bar>
   <ion-content>
@@ -41,13 +41,25 @@
           <span class="input-label">Confirm Password</span>
           <input type="password" ng-model="loginData.confirmpassword" placeholder="Confirm Password">
         </label>
+        <label class="item item-input">
+          <span class="input-label">Name</span>
+          <input type="text" ng-model="loginData.name" placeholder="Name">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Department</span>
+          <input type="text" ng-model="loginData.department" placeholder="Department">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Matric No.</span>
+          <input type="text" ng-model="loginData.matric_no" placeholder="Matric Number">
+        </label>
         <label class="item">
           <button class="button button-block button-positive" type="submit">Sign up</button>
         </label>
         <div class="text-center padding">
           <div class="padding">Already have an account?</div>
           <button class="button button-positive" ><i class="ion-social-facebook"></i> Log in with Facebook</button>
-          <button class="button button-balanced" ng-click="backLogin()">Log in with Email</button>
+          <a class="button button-balanced" ng-click="backLogin()">Log in with Email</a>
         </div>
       </div>
     </form>

@@ -31,13 +31,13 @@
     <div class="item item-input-inset">
       <label class="item-input-wrapper">
         <i class="icon ion-search placeholder-icon"></i>
-        <input type="text" placeholder="Search">
+        <input type="text" placeholder="Search" ng-model="search.name">
       </label>
     </div>
     <!-- ======================
     /END SEARCH FORM
     ====================== -->
-    <div class="item" ng-repeat="event in events">
+    <div class="item" ng-repeat="event in events | filter:search">
       <!-- ======================
       POST - image only
       ====================== -->
@@ -51,7 +51,7 @@
         <a href="#/app/eventdetails/{{ event.id }}"><img src="img/gemionic/news-image-2.jpg" alt="" class="fluid-image"></a>
         <div class="media-social-stats stat-label"> <!-- Absolutely positioned right. '.news-media' is relative -->
           <span class="news-comment-summary">
-            <button on-click="alert('123');" class="button-clear"><i class="icon ion-heart"></i> 2</button>
+            <button ng-click="likeEvent(event.id)" class="button-clear"><i class="icon ion-heart"></i> {{ event.likes }}</button>
             <button ng-click="" class="button-clear"><i class="icon ion-android-bookmark"></i></button>
             <!--<i class="icon ion-chatbubble"></i> 3-->
           </span>
@@ -66,17 +66,20 @@
           <img src="img/gemionic/profile-image.jpg" alt="" class="img">
         </div>
         <div class="news-content" ng-click="go('/app/eventdetails/{{ event.id }}')">
-          <h2>{{ event.name }}</h2>
+          <h1>{{ event.name }}</h1>
           <div class="gem-tiny-text news-item-stats">
-            <h3><i class="icon ion-clock"></i> Event Time</h3>
+            <h2><i class="icon ion-clock"></i> Event Time</h2>
             <!--<span class="news-comment-summary">-->
               <!--<button href="#" class="button-clear"><i class="icon ion-heart"></i> 2</button>-->
               <!--&lt;!&ndash;<i class="icon ion-chatbubble"></i> 3&ndash;&gt;-->
             <!--</span>-->
           </div>
+          <div class="row">
+            <span class="gem-label warning">Tag1</span>
+          </div>
         </div>
         <div class="news-more-action">
-          <button class="button-clear padding-right"><h1><i class="icon ion-plus"></i></h1></button>
+          <button class="button-clear padding-right" ng-click="registerEvent(event.id)"><h1><i class="icon ion-plus"></i></h1></button>
         </div>
       </div>
       <!-- ======================

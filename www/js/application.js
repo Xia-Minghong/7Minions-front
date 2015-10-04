@@ -130,41 +130,9 @@ App.controllers = angular.module('starter.controllers', []);
 
 App.services = angular.module('starter.services', []);
 
-App.services.factory('Event', function($http) {
-  var data, getEvent, getEvents;
-  data = [
-    {
-      "id": 0,
-      "name": "event1"
-    }, {
-      "id": 1,
-      "name": "event2"
-    }
-  ];
-  getEvents = function(filters, callback) {
-    callback(data);
-  };
-  getEvent = function(id, callback) {
-    callback(data[id]);
-  };
-  return {
-    getEvents: getEvents,
-    getEvent: getEvent
-  };
-});
+App.host_addr = "http://localhost:8000";
 
-App.services.factory('User', function($http) {
-  var login;
-  login = function(loginData, callback) {
-    alert("do something");
-    callback(true);
-  };
-  return {
-    login: login
-  };
-});
-
-App.controllers.controller('AppCtrl', function($scope, $ionicModal, $ionicHistory, $timeout, $location, User) {
+App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $timeout, $location, User) {
   $scope.goBack = function() {
     $ionicHistory.goBack();
   };
@@ -175,10 +143,18 @@ App.controllers.controller('AppCtrl', function($scope, $ionicModal, $ionicHistor
     showLogin: true
   };
   $scope.loginData = {};
+  $scope.UserData = {};
+  $scope.isLogged = function() {
+    return $scope.UserData.hasOwnProperty('token');
+  };
   $ionicModal.fromTemplateUrl('templates/social/login.html', {
-    scope: $scope
+    scope: $scope,
+    backdropClickToClose: false
   }).then(function(modal) {
     $scope.modal = modal;
+    if (!$scope.isLogged()) {
+      $scope.login();
+    }
   });
   $scope.closeLogin = function() {
     $scope.modal.hide();
@@ -191,13 +167,24 @@ App.controllers.controller('AppCtrl', function($scope, $ionicModal, $ionicHistor
   };
   $scope.doLogin = function() {
     console.log('Doing login', $scope.loginData);
-    User.login($scope.loginData, function(isLogin) {
-      if (isLogin === true) {
+    User.login($scope.loginData, function(data) {
+      var alertPopup;
+      if (data.hasOwnProperty('access_token')) {
+        $scope.UserData.token = data.token_type + ' ' + data.access_token;
         $scope.closeLogin();
       } else {
-        alert("1");
+        alertPopup = $ionicPopup.alert({
+          title: 'Login Failed',
+          template: 'The credentials are invalid'
+        });
+        alertPopup.show();
       }
     });
+  };
+  $scope.doLogout = function() {
+    $scope.loginData.password = "";
+    $scope.UserData = {};
+    return $scope.login();
   };
   $scope.signUp = function() {
     $scope.control.showLogin = false;
@@ -219,5 +206,93 @@ App.controllers.controller('eventsCtrl', function($scope, $stateParams, Event) {
     Event.getEvent($stateParams.eventId, function(data) {
       $scope.event = data;
     });
+  };
+  $scope.likeEvent = function(id) {
+    Event.likeEvent(id, function(response) {
+      if (response === true) {
+        return;
+      } else {
+        alert("fail");
+      }
+    });
+  };
+  $scope.registerEvent = function(id) {
+    Event.registerEvent(id, function(response) {
+      if (response === true) {
+        return;
+      } else {
+        alert("fail");
+      }
+    });
+  };
+});
+
+App.services.factory('Event', function($http) {
+  var data, getEvent, getEvents, likeEvent, registerEvent;
+  data = [
+    {
+      "id": 0,
+      "name": "event1",
+      "likes": 4
+    }, {
+      "id": 1,
+      "name": "event2",
+      "likes": 5
+    }
+  ];
+  getEvents = function(filters, callback) {
+    callback(data);
+  };
+  getEvent = function(id, callback) {
+    callback(data[id]);
+  };
+  likeEvent = function(id, callback) {
+    data[id].likes += 1;
+    callback(true);
+  };
+  registerEvent = function(id, callback) {
+    callback(false);
+  };
+  return {
+    getEvents: getEvents,
+    getEvent: getEvent,
+    likeEvent: likeEvent,
+    registerEvent: registerEvent
+  };
+});
+
+App.services.factory('User', function($http) {
+  var login;
+  login = function(loginData, callback) {
+    $http({
+      url: App.host_addr + "/o/token/",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": "Basic aTJKQm1oVUN4QWMydDJIS1dscUhVMmxCV1U5UWZqZTNwdTFDMG5iRzpHbHFHc0RHZG4xWTBlREJQWW9idk84ZmZrRDJVQ0d4cllMR21rZE9ZalAwQTA4U01HVVI1Vnl4Y3d1bHBDZzF4RjUwVkw0ZExSUnR4cmZsOGZQbnNFQ21MdTB0eG11RDdkdGZ5WVhlS2tDQlE5SFBsQXM3WnZUTmh2a2VyYktBMA=="
+      },
+      transformRequest: function(obj) {
+        var p, str;
+        str = [];
+        for (p in obj) {
+          str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+        }
+        return str.join('&');
+      },
+      data: {
+        "grant_type": "password",
+        "username": loginData.username,
+        "password": loginData.password,
+        "scope": "read"
+      }
+    }).success((function(data, status, headers, config) {
+      callback(data);
+    })).error((function(data, status, headers, config) {
+      console.log("Login failed");
+      callback(data);
+    }));
+  };
+  return {
+    login: login
   };
 });

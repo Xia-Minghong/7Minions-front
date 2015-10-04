@@ -1,4 +1,4 @@
-App.controllers.controller 'AppCtrl', ($scope, $ionicModal, $ionicHistory, $timeout, $location, User) ->
+App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $timeout, $location, User) ->
 
   $scope.goBack = () ->
     $ionicHistory.goBack()
@@ -12,9 +12,17 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicModal, $ionicHistory, $time
 
   # Form data for the login modal
   $scope.loginData = {}
+  $scope.UserData = {}
+
+  $scope.isLogged = ->
+    return $scope.UserData.hasOwnProperty('token')
+
   # Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/social/login.html', scope: $scope).then (modal) ->
+  $ionicModal.fromTemplateUrl('templates/social/login.html', scope: $scope, backdropClickToClose: false).then (modal) ->
     $scope.modal = modal
+    # Login if not logged in
+    if !$scope.isLogged()
+      $scope.login()
     return
   # Triggered in the login modal to close it
 
@@ -37,17 +45,26 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicModal, $ionicHistory, $time
 
   $scope.doLogin = ->
     console.log 'Doing login', $scope.loginData
-    User.login $scope.loginData, (isLogin) ->
-      if isLogin == true
+    User.login $scope.loginData, (data) ->
+      if data.hasOwnProperty('access_token')
+        $scope.UserData.token = data.token_type + ' ' + data.access_token
         $scope.closeLogin()
       else
-        alert("1")
+        alertPopup = $ionicPopup.alert(
+          title: 'Login Failed'
+          template: 'The credentials are invalid')
+        alertPopup.show()
       return
     #    $timeout (->
     #      $scope.closeLogin()
     #      return
     #    ), 1000
     return
+
+  $scope.doLogout = ->
+    $scope.loginData.password = ""
+    $scope.UserData = {}
+    $scope.login()
 
   $scope.signUp = ->
     $scope.control.showLogin = false
