@@ -16,27 +16,27 @@ angular.module('starter', [
   return
 ).config ($stateProvider, $urlRouterProvider) ->
   $stateProvider
-  .state('app',
+  .state 'app',
     url: '/app'
     abstract: true
     templateUrl: 'templates/social/menu.html'
-    controller: 'AppCtrl')
+    controller: 'AppCtrl'
 
-  .state('app.events',
+  .state 'app.events',
     url: '/events'
     views:
       'menuContent':
         templateUrl: 'templates/social/events.html'
         controller: 'eventsCtrl'
-  )
 
-  .state('app.eventdetails',
+
+  .state 'app.eventdetails',
     url: '/eventdetails/{eventId}'
     views:
       'menuContent':
         templateUrl: 'templates/social/event-details.html'
         controller: 'eventsCtrl'
-  )
+
 
   .state('app.start',
     url: '/start'
@@ -58,17 +58,24 @@ angular.module('starter', [
     url: '/email'
     views: 'menuContent': templateUrl: 'templates/social/send-email.html')
 
-  .state('app.profile',
-    url: '/profile'
-    views: 'menuContent': templateUrl: 'templates/social/profile.html')
+  .state 'app.profile',
+    url: '/profile/{userId}'
+    views:
+      'menuContent':
+        templateUrl: 'templates/social/profile.html'
+        controller: 'userCtrl'
+
 
   .state('app.timeline',
     url: '/timeline'
     views: 'menuContent': templateUrl: 'templates/social/timeline.html')
 
-  .state('app.editprofile',
+  .state 'app.editprofile',
     url: '/editprofile'
-    views: 'menuContent': templateUrl: 'templates/social/profile-edit.html')
+    views:
+      'menuContent':
+        templateUrl: 'templates/social/profile-edit.html'
+        controller: 'userCtrl'
 
   .state('app.profiletwo',
     url: '/profiletwo'
@@ -78,17 +85,20 @@ angular.module('starter', [
     url: '/profilethree'
     views: 'menuContent': templateUrl: 'templates/social/profile3.html')
 
-  .state('app.news',
+  .state 'app.news',
     url: '/news'
-    views: 'menuContent': templateUrl: 'templates/social/news.html')
+    views: 'menuContent': templateUrl: 'templates/social/news.html'
 
-  .state('app.eventdetails2',
+  .state 'app.eventdetails2',
     url: '/eventdetails2'
-    views: 'menuContent': templateUrl: 'templates/social/view-post.html')
+    views: 'menuContent': templateUrl: 'templates/social/view-post.html'
 
   .state 'app.invite',
     url: '/invite'
-    views: 'menuContent': templateUrl: 'templates/social/social-invite-friend.html'
+    views:
+      'menuContent':
+        templateUrl: 'templates/social/social-invite-friend.html'
+        controller: 'userCtrl'
   # if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise '/app/events'
   return

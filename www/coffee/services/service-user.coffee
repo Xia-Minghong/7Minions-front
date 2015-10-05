@@ -34,6 +34,27 @@ App.services.factory 'User', ($http) ->
     return
 
 
+  getProfile = (token, uid, callback) ->
+    if uid == "0"
+      uid = "11"
+    $http(
+      url: App.host_addr + "/students/"+uid+"/"
+      method: "GET"
+      headers:
+        "Authorization":token
+    )
+    .success (data) ->
+      callback(data)
+
+
+  inviteFriend = (token, friend_id, callback) ->
+    callback(token)
+    return
+
+
+
   {
-    login: login,
+    login       : login
+    getProfile  : getProfile
+    inviteFriend: inviteFriend
   }

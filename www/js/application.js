@@ -65,10 +65,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).
       }
     }
   }).state('app.profile', {
-    url: '/profile',
+    url: '/profile/{userId}',
     views: {
       'menuContent': {
-        templateUrl: 'templates/social/profile.html'
+        templateUrl: 'templates/social/profile.html',
+        controller: 'userCtrl'
       }
     }
   }).state('app.timeline', {
@@ -82,7 +83,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).
     url: '/editprofile',
     views: {
       'menuContent': {
-        templateUrl: 'templates/social/profile-edit.html'
+        templateUrl: 'templates/social/profile-edit.html',
+        controller: 'userCtrl'
       }
     }
   }).state('app.profiletwo', {
@@ -117,7 +119,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).
     url: '/invite',
     views: {
       'menuContent': {
-        templateUrl: 'templates/social/social-invite-friend.html'
+        templateUrl: 'templates/social/social-invite-friend.html',
+        controller: 'userCtrl'
       }
     }
   });
@@ -143,9 +146,10 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
     showLogin: true
   };
   $scope.loginData = {};
-  $scope.UserData = {};
+  $scope.signUpData = {};
+  $scope.userData = {};
   $scope.isLogged = function() {
-    return $scope.UserData.hasOwnProperty('token');
+    return $scope.userData.hasOwnProperty('token');
   };
   $ionicModal.fromTemplateUrl('templates/social/login.html', {
     scope: $scope,
@@ -170,7 +174,10 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
     User.login($scope.loginData, function(data) {
       var alertPopup;
       if (data.hasOwnProperty('access_token')) {
-        $scope.UserData.token = data.token_type + ' ' + data.access_token;
+        $scope.userData.token = data.token_type + ' ' + data.access_token;
+        User.getProfile($scope.userData.token, "0", function(data) {
+          $scope.userData.username = data;
+        });
         $scope.closeLogin();
       } else {
         alertPopup = $ionicPopup.alert({
@@ -183,7 +190,7 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
   };
   $scope.doLogout = function() {
     $scope.loginData.password = "";
-    $scope.UserData = {};
+    $scope.userData = {};
     return $scope.login();
   };
   $scope.signUp = function() {
@@ -227,6 +234,19 @@ App.controllers.controller('eventsCtrl', function($scope, $stateParams, Event) {
   };
 });
 
+App.controllers.controller('userCtrl', function($scope, $stateParams, $ionicHistory, User) {
+  $scope.inviteFriend = function() {
+    User.inviteFriend($scope.userData.token, 1, function(data) {
+      alert(data);
+    });
+  };
+  $scope.initProfile = function() {
+    User.getProfile($scope.userData.token, $stateParams.userId, function(data) {
+      alert(data);
+    });
+  };
+});
+
 App.services.factory('Event', function($http) {
   var data, getEvent, getEvents, likeEvent, registerEvent;
   data = [
@@ -262,7 +282,7 @@ App.services.factory('Event', function($http) {
 });
 
 App.services.factory('User', function($http) {
-  var login;
+  var getProfile, inviteFriend, login;
   login = function(loginData, callback) {
     $http({
       url: App.host_addr + "/o/token/",
@@ -292,7 +312,26 @@ App.services.factory('User', function($http) {
       callback(data);
     }));
   };
+  getProfile = function(token, uid, callback) {
+    if (uid === "0") {
+      uid = "11";
+    }
+    return $http({
+      url: App.host_addr + "/students/" + uid + "/",
+      method: "GET",
+      headers: {
+        "Authorization": token
+      }
+    }).success(function(data) {
+      return callback(data);
+    });
+  };
+  inviteFriend = function(token, friend_id, callback) {
+    callback(token);
+  };
   return {
-    login: login
+    login: login,
+    getProfile: getProfile,
+    inviteFriend: inviteFriend
   };
 });

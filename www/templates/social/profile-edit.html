@@ -13,8 +13,8 @@
   <ion-nav-buttons side="right">
     <button class="button button-icon icon ion-checkmark-circled"></button>
   </ion-nav-buttons>
-  
-  
+
+
   <!-- ======================
   MAIN CONTENT SECTION
   ====================== -->
@@ -46,7 +46,7 @@
       </label>
       <label class="item item-input item-stacked-label">
         <span class="input-label">Email</span>
-        <input type="text" placeholder="john@suhr.com">
+        <input type="text" placeholder="{{ userData.username }}" readonly>
       </label>
       <label class="item item-input item-select">
         <div class="input-label">
@@ -65,13 +65,13 @@
     </div>
 
     <!-- Separator Title (for forms and mini headings) -->
-    <div class="profile-separator-title"><i class="ion-gear-a"></i> Account Settings</div> 
+    <div class="profile-separator-title"><i class="ion-gear-a"></i> Account Settings</div>
 
     <!-- Standard Ionic List -->
     <div class="list">
       <label class="item item-input item-stacked-label">
         <span class="input-label">Email/Username</span>
-        <input type="text" placeholder="something@something.com">
+        <input type="text" placeholder="{{ userData.username }}" readonly>
       </label>
       <label class="item item-input item-stacked-label">
         <span class="input-label">Password</span>

@@ -12,10 +12,11 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ion
 
   # Form data for the login modal
   $scope.loginData = {}
-  $scope.UserData = {}
+  $scope.signUpData = {}
+  $scope.userData = {}
 
   $scope.isLogged = ->
-    return $scope.UserData.hasOwnProperty('token')
+    return $scope.userData.hasOwnProperty('token')
 
   # Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/social/login.html', scope: $scope, backdropClickToClose: false).then (modal) ->
@@ -47,7 +48,11 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ion
     console.log 'Doing login', $scope.loginData
     User.login $scope.loginData, (data) ->
       if data.hasOwnProperty('access_token')
-        $scope.UserData.token = data.token_type + ' ' + data.access_token
+        $scope.userData.token = data.token_type + ' ' + data.access_token
+        User.getProfile $scope.userData.token, "0", (data) ->
+          # More to come
+          $scope.userData.username = data
+          return
         $scope.closeLogin()
       else
         alertPopup = $ionicPopup.alert(
@@ -63,7 +68,7 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ion
 
   $scope.doLogout = ->
     $scope.loginData.password = ""
-    $scope.UserData = {}
+    $scope.userData = {}
     $scope.login()
 
   $scope.signUp = ->
