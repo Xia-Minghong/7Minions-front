@@ -176,7 +176,10 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
       if (data.hasOwnProperty('access_token')) {
         $scope.userData.token = data.token_type + ' ' + data.access_token;
         User.getProfile($scope.userData.token, "0", function(data) {
-          $scope.userData.username = data;
+          var token;
+          token = $scope.userData.token;
+          $scope.userData = data;
+          $scope.userData.token = token;
         });
         $scope.closeLogin();
       } else {
@@ -242,7 +245,7 @@ App.controllers.controller('userCtrl', function($scope, $stateParams, $ionicHist
   };
   $scope.initProfile = function() {
     User.getProfile($scope.userData.token, $stateParams.userId, function(data) {
-      alert(data);
+      $scope.profileData = data;
     });
   };
 });
@@ -314,7 +317,7 @@ App.services.factory('User', function($http) {
   };
   getProfile = function(token, uid, callback) {
     if (uid === "0") {
-      uid = "11";
+      uid = "me";
     }
     return $http({
       url: App.host_addr + "/students/" + uid + "/",

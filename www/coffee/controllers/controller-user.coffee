@@ -8,7 +8,7 @@ App.controllers.controller 'userCtrl', ($scope, $stateParams, $ionicHistory, Use
 
   $scope.initProfile = () ->
     User.getProfile $scope.userData.token, $stateParams.userId, (data) ->
-      alert data
+      $scope.profileData = data
       return
     return
 

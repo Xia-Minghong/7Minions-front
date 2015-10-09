@@ -36,7 +36,7 @@ App.services.factory 'User', ($http) ->
 
   getProfile = (token, uid, callback) ->
     if uid == "0"
-      uid = "11"
+      uid = "me"
     $http(
       url: App.host_addr + "/students/"+uid+"/"
       method: "GET"

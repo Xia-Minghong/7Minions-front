@@ -50,8 +50,9 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ion
       if data.hasOwnProperty('access_token')
         $scope.userData.token = data.token_type + ' ' + data.access_token
         User.getProfile $scope.userData.token, "0", (data) ->
-          # More to come
-          $scope.userData.username = data
+          token = $scope.userData.token
+          $scope.userData = data
+          $scope.userData.token = token
           return
         $scope.closeLogin()
       else
