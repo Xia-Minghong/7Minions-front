@@ -1,4 +1,8 @@
-App.controllers.controller 'eventsCtrl', ($scope, $stateParams, Event) ->
+App.controllers.controller 'eventsCtrl', ($scope, $state, $stateParams, Event) ->
+
+  $scope.go = (url)->
+    window.location.href = url
+    return
 
   $scope.initEvents = () ->
     Event.getEvents $scope.userData.token, [], (data) ->
@@ -8,6 +12,8 @@ App.controllers.controller 'eventsCtrl', ($scope, $stateParams, Event) ->
     return
 
   $scope.initEvent = () ->
+    if $stateParams.eventId == null
+      return
     Event.getEvent $scope.userData.token, $stateParams.eventId, (data) ->
       $scope.event = data
       return
@@ -21,6 +27,16 @@ App.controllers.controller 'eventsCtrl', ($scope, $stateParams, Event) ->
         return
       else
         console.log("like fail")
+      return
+    return
+
+  $scope.bookmarkEvent = (id) ->
+    Event.bookmarkEvent $scope.userData.token, id, (response) ->
+      if response == true
+        console.log("bookmark success")
+        return
+      else
+        console.log("bookmark fail")
       return
     return
 

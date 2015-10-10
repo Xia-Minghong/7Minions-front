@@ -6798,7 +6798,7 @@ progress {
   -webkit-transition: opacity 0.1s;
   transition: opacity 0.1s;
   padding: 0 6px;
-  /*max-height: 42px;*/
+  max-height: 42px;
   border-color: transparent;
   background: none;
   box-shadow: none; }
@@ -6806,35 +6806,12 @@ progress {
     border-color: transparent;
     background: none;
     box-shadow: none;
-    color: #556061; }
-/*b2b2b2*/
+    color: #b2b2b2; }
   .button-clear.button-icon {
     border-color: transparent;
     background: none; }
   .button-clear.active, .button-clear.activated {
     opacity: 0.3; }
-
-
-.button-white {
-  -webkit-transition: opacity 0.1s;
-  transition: opacity 0.1s;
-  padding: 0 6px;
-  /*max-height: 42px;*/
-  border-color: transparent;
-  background: none;
-  box-shadow: none; }
-.button-white.button-white {
-  border-color: transparent;
-  background: none;
-  box-shadow: none;
-  color: #FFFFFF;
-   }
-/*b2b2b2*/
-.button-white.button-icon {
-  border-color: transparent;
-  background: none; }
-.button-white.active, .button-white.activated {
-  opacity: 0.3; }
 
 .button-outline {
   -webkit-transition: opacity 0.1s;

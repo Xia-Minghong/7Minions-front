@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).run(function($ionicPlatform) {
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ionic.rating']).run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
@@ -14,6 +14,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).
     templateUrl: 'templates/social/menu.html',
     controller: 'AppCtrl'
   }).state('app.events', {
+    cache: false,
     url: '/events',
     views: {
       'menuContent': {
@@ -22,6 +23,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).
       }
     }
   }).state('app.eventdetails', {
+    cache: false,
     url: '/eventdetails/{eventId}',
     views: {
       'menuContent': {
@@ -51,10 +53,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).
       }
     }
   }).state('app.newpost', {
-    url: '/newpost',
+    cache: false,
+    url: '/newpost/{feedbackEventId}',
     views: {
       'menuContent': {
-        templateUrl: 'templates/social/new-post.html'
+        templateUrl: 'templates/social/new-post.html',
+        controller: 'feedbackCtrl'
       }
     }
   }).state('app.email', {
@@ -65,7 +69,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).
       }
     }
   }).state('app.profile', {
-    url: '/profile/{userId}',
+    url: '/profile/{userId}/{userType}',
     views: {
       'menuContent': {
         templateUrl: 'templates/social/profile.html',
@@ -175,7 +179,7 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
       var alertPopup;
       if (data.hasOwnProperty('access_token')) {
         $scope.userData.token = data.token_type + ' ' + data.access_token;
-        User.getProfile($scope.userData.token, "0", function(data) {
+        User.getProfile($scope.userData.token, "0", "students", function(data) {
           var token;
           token = $scope.userData.token;
           $scope.userData = data;
@@ -208,7 +212,7 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
         $scope.control.showLogin = true;
         alertPopup = $ionicPopup.alert({
           title: 'Sign Up Successful',
-          template: 'Please login'
+          template: 'Sign Up Successful, please login'
         });
         alertPopup.show();
       } else {
@@ -222,7 +226,10 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
   };
 });
 
-App.controllers.controller('eventsCtrl', function($scope, $stateParams, Event) {
+App.controllers.controller('eventsCtrl', function($scope, $state, $stateParams, Event) {
+  $scope.go = function(url) {
+    window.location.href = url;
+  };
   $scope.initEvents = function() {
     Event.getEvents($scope.userData.token, [], function(data) {
       $scope.events = data;
@@ -230,6 +237,9 @@ App.controllers.controller('eventsCtrl', function($scope, $stateParams, Event) {
     });
   };
   $scope.initEvent = function() {
+    if ($stateParams.eventId === null) {
+      return;
+    }
     Event.getEvent($scope.userData.token, $stateParams.eventId, function(data) {
       $scope.event = data;
     });
@@ -242,6 +252,16 @@ App.controllers.controller('eventsCtrl', function($scope, $stateParams, Event) {
         return;
       } else {
         console.log("like fail");
+      }
+    });
+  };
+  $scope.bookmarkEvent = function(id) {
+    Event.bookmarkEvent($scope.userData.token, id, function(response) {
+      if (response === true) {
+        console.log("bookmark success");
+        return;
+      } else {
+        console.log("bookmark fail");
       }
     });
   };
@@ -273,6 +293,38 @@ App.controllers.controller('eventsCtrl', function($scope, $stateParams, Event) {
   };
 });
 
+App.controllers.controller('feedbackCtrl', function($scope, $state, $stateParams, $ionicPopup, $ionicHistory, Feedback, Event) {
+  $scope.max = 5;
+  $scope.feedbackData = {};
+  $scope.initFeedback = function() {
+    Event.getEvent($scope.userData.token, $stateParams.feedbackEventId, function(data) {
+      return $scope.feedbackEvent = data;
+    });
+  };
+  $scope.submit = function() {
+    Feedback.postFeedback($scope.userData.token, $scope.feedbackEvent.id, $scope.feedbackData.content, parseInt($scope.feedbackData.rating), function(success) {
+      var alertPopup;
+      if (success) {
+        alertPopup = $ionicPopup.alert({
+          title: 'Feedback Successful',
+          template: 'Thank you for your feedback!'
+        });
+        alertPopup.show();
+        $ionicHistory.goBack();
+      } else {
+        alertPopup = $ionicPopup.alert({
+          title: 'Feedback Failed',
+          template: 'Please retry'
+        });
+        alertPopup.show();
+      }
+    });
+  };
+  $scope.back = function() {
+    $ionicHistory.goBack();
+  };
+});
+
 App.controllers.controller('userCtrl', function($scope, $stateParams, $ionicHistory, User) {
   $scope.inviteFriend = function() {
     User.inviteFriend($scope.userData.token, 1, function(data) {
@@ -280,14 +332,14 @@ App.controllers.controller('userCtrl', function($scope, $stateParams, $ionicHist
     });
   };
   $scope.initProfile = function() {
-    User.getProfile($scope.userData.token, $stateParams.userId, function(data) {
+    User.getProfile($scope.userData.token, $stateParams.userId, $stateParams.userType, function(data) {
       $scope.profileData = data;
     });
   };
 });
 
 App.services.factory('Event', function($http) {
-  var getEvent, getEvents, likeEvent, registerEvent;
+  var bookmarkEvent, getEvent, getEvents, likeEvent, registerEvent;
   getEvents = function(token, filters, callback) {
     $http({
       url: App.host_addr + "/events/",
@@ -330,6 +382,20 @@ App.services.factory('Event', function($http) {
       callback(false);
     }));
   };
+  bookmarkEvent = function(token, id, callback) {
+    $http({
+      url: App.host_addr + "/bookmarks/" + id + "/",
+      method: "GET",
+      headers: {
+        "Authorization": token
+      }
+    }).success((function(data, status, headers, config) {
+      callback(true);
+    })).error((function(data, status, headers, config) {
+      console.log("Process failed");
+      callback(false);
+    }));
+  };
   registerEvent = function(id, callback) {
     callback(false);
   };
@@ -337,7 +403,35 @@ App.services.factory('Event', function($http) {
     getEvents: getEvents,
     getEvent: getEvent,
     likeEvent: likeEvent,
-    registerEvent: registerEvent
+    registerEvent: registerEvent,
+    bookmarkEvent: bookmarkEvent
+  };
+});
+
+App.services.factory('Feedback', function($http) {
+  var postFeedback;
+  postFeedback = function(token, event, content, rating, callback) {
+    $http({
+      url: App.host_addr + "/feedbacks/",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      data: {
+        "event": event,
+        "content": content,
+        "rating": rating
+      }
+    }).success((function(data, status, headers, config) {
+      callback(true);
+    })).error((function(data, status, headers, config) {
+      console.log("feedback failed");
+      callback(false);
+    }));
+  };
+  return {
+    postFeedback: postFeedback
   };
 });
 
@@ -394,12 +488,12 @@ App.services.factory('User', function($http) {
       callback(data);
     }));
   };
-  getProfile = function(token, uid, callback) {
+  getProfile = function(token, uid, type, callback) {
     if (uid === "0") {
       uid = "me";
     }
     return $http({
-      url: App.host_addr + "/students/" + uid + "/",
+      url: App.host_addr + "/" + type + "/" + uid + "/",
       method: "GET",
       headers: {
         "Authorization": token
@@ -416,5 +510,92 @@ App.services.factory('User', function($http) {
     getProfile: getProfile,
     inviteFriend: inviteFriend,
     signUp: signUp
+  };
+});
+
+angular.module('ionic.rating', []).constant('ratingConfig', {
+  max: 5,
+  stateOn: null,
+  stateOff: null
+}).controller('RatingController', function($scope, $attrs, ratingConfig) {
+  var ngModelCtrl;
+  ngModelCtrl = {
+    $setViewValue: angular.noop
+  };
+  this.init = function(ngModelCtrl_) {
+    var max, ratingStates;
+    ngModelCtrl = ngModelCtrl_;
+    ngModelCtrl.$render = this.render;
+    this.stateOn = angular.isDefined($attrs.stateOn) ? $scope.$parent.$eval($attrs.stateOn) : ratingConfig.stateOn;
+    this.stateOff = angular.isDefined($attrs.stateOff) ? $scope.$parent.$eval($attrs.stateOff) : ratingConfig.stateOff;
+    max = angular.isDefined($attrs.max) ? $scope.$parent.$eval($attrs.max) : ratingConfig.max;
+    ratingStates = angular.isDefined($attrs.ratingStates) ? $scope.$parent.$eval($attrs.ratingStates) : new Array(max);
+    return $scope.range = this.buildTemplateObjects(ratingStates);
+  };
+  this.buildTemplateObjects = function(states) {
+    var i, j, len, ref;
+    ref = states.length;
+    for (j = 0, len = ref.length; j < len; j++) {
+      i = ref[j];
+      states[i] = angular.extend({
+        index: 1
+      }, {
+        stateOn: this.stateOn,
+        stateOff: this.stateOff
+      }, states[i]);
+    }
+    return states;
+  };
+  $scope.rate = function(value) {
+    if (!$scope.readonly && value >= 0 && value <= $scope.range.length) {
+      ngModelCtrl.$setViewValue(value);
+      return ngModelCtrl.$render();
+    }
+  };
+  $scope.reset = function() {
+    $scope.value = ngModelCtrl.$viewValue;
+    return $scope.onLeave();
+  };
+  $scope.enter = function(value) {
+    if (!$scope.readonly) {
+      $scope.value = value;
+    }
+    return $scope.onHover({
+      value: value
+    });
+  };
+  $scope.onKeydown = function(evt) {
+    if (/(37|38|39|40)/.test(evt.which)) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      return $scope.rate($scope.value + (evt.which === 38 || evt.which === 39 ? {
+        1: -1
+      } : void 0));
+    }
+  };
+  this.render = function() {
+    return $scope.value = ngModelCtrl.$viewValue;
+  };
+  return this;
+}).directive('rating', function() {
+  return {
+    restrict: 'EA',
+    require: ['rating', 'ngModel'],
+    scope: {
+      readonly: '=?',
+      onHover: '&',
+      onLeave: '&'
+    },
+    controller: 'RatingController',
+    template: '<ul class="rating" ng-mouseleave="reset()" ng-keydown="onKeydown($event)">' + '<li ng-repeat="r in range track by $index" ng-click="rate($index + 1)"><i class="icon" ng-class="$index < value && (r.stateOn || \'ion-ios-star\') || (r.stateOff || \'ion-ios-star-outline\')"></i></li>' + '</ul>',
+    replace: true,
+    link: function(scope, element, attrs, ctrls) {
+      var ngModelCtrl, ratingCtrl;
+      ratingCtrl = ctrls[0];
+      ngModelCtrl = ctrls[1];
+      if (ngModelCtrl) {
+        return ratingCtrl.init(ngModelCtrl);
+      }
+    }
   };
 });

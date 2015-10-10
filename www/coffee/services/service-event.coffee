@@ -63,6 +63,28 @@ App.services.factory 'Event', ($http) ->
     )
     return
 
+  bookmarkEvent = (token, id, callback) ->
+    $http(
+      url: App.host_addr + "/bookmarks/"+id+"/"
+      method: "GET"
+      headers:
+        "Authorization":token
+    )
+
+    .success ((data, status, headers, config) ->
+#      callback(data)
+      callback(true)
+      return
+    )
+
+    .error ((data, status, headers, config) ->
+      console.log("Process failed")
+      callback(false)
+      #      callback(data)
+      return
+    )
+    return
+
   registerEvent = (id, callback) ->
     callback false
     return
@@ -72,4 +94,5 @@ App.services.factory 'Event', ($http) ->
     getEvent      : getEvent,
     likeEvent     : likeEvent
     registerEvent : registerEvent,
+  bookmarkEvent : bookmarkEvent
   }

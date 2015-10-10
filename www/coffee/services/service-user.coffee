@@ -63,11 +63,11 @@ App.services.factory 'User', ($http) ->
     return
 
 
-  getProfile = (token, uid, callback) ->
+  getProfile = (token, uid, type, callback) ->
     if uid == "0"
       uid = "me"
     $http(
-      url: App.host_addr + "/students/"+uid+"/"
+      url: App.host_addr + "/"+type+"/"+uid+"/"
       method: "GET"
       headers:
         "Authorization":token

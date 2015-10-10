@@ -16,11 +16,11 @@
             <button menu-toggle="left" class="button button-small button-icon icon ion-navicon gem-white"></button></div>
           </div>
           <div class="col col-75 gem-text-right gem-white">
-            <span class="gem-label warning">Tag1</span>
-            <span class="gem-label success">Tag2</span>
-            <span class="gem-label danger">Tag3</span>
-            <span class="gem-label default">Tag4</span>
-            <span class="gem-label primary">Tag5</span>
+            <span class="gem-label warning" ng-repeat="tag in event.tag_set">{{tag.tag}}</span>
+            <!--<span class="gem-label success">Tag2</span>-->
+            <!--<span class="gem-label danger">Tag3</span>-->
+            <!--<span class="gem-label default">Tag4</span>-->
+            <!--<span class="gem-label primary">Tag5</span>-->
           </div>
           <div class="col col-25">
             <button menu-toggle="left" class="button button-small button-icon icon ion-navicon-round gem-white"></button>
@@ -54,19 +54,22 @@
       <p>{{ event.description }}</p>
 
       <p class="post-date"><i class="icon ion-clock"></i>  {{ parseDate(event.start_time) }} - {{ parseDate(event.end_time) }}</p>
-      <p class="post-date"><i class="icon ion-location"></i>  {{ event.location }}</p>
+      <p class="post-date"><i class="icon ion-location"></i>&nbsp;&nbsp;{{ event.location }}</p>
 
       <!-- Article Buttons-->
       <div class="row article-actions">
-        <button class="button button-small gem-primary uppercase">
+        <button class="button button-small gem-primary uppercase" ng-click="registerEvent(event.id)">
           <i class="icon ion-plus"></i> Register
         </button>
         <button class="button button-small gem-success uppercase" ng-click="likeEvent(event.id)">
           <i class="icon ion-heart"></i> Like
         </button>
-        <button class="button button-small gem-default uppercase">
-          <i class="icon ion-compose"></i> Feedback
+        <button class="button button-small gem-success uppercase" ng-click="bookmarkEvent(event.id)">
+          <i class="icon ion-android-bookmark"></i> Bookmark
         </button>
+        <a class="button button-small gem-default uppercase" href="#/app/newpost/{{event.id}}">
+          <i class="icon ion-compose"></i> Feedback
+        </a>
         <!--More Actions-->
         <!--<div class="button button-small gem-outline">-->
           <!--<i class="icon ion-more gem-icon"></i>-->
@@ -75,17 +78,17 @@
       <!-- End Article Buttons-->
 
       <!-- Comment Section -->
-      <div class="article-comments">
+      <div class="article-comments" ng-click="go('#/app/profile/'+event.organizer.id+'/organizers')">
         <!-- Comment Item -->
-        <div class="comment-item">
+        <div class="comment-item" ng-click="">
           <!-- Commenter thumb -->
           <img src="img/gemionic/profile-image.jpg" alt="" class="comment-profile-pic">
 
           <!-- Comment Text -->
           <div class="comment-text">
-            <h4 class="bold"></h4>
+            <h4 class="bold">{{event.organizer.name}}</h4>
             <div class="comment">
-              Organizer Description
+              {{event.organizer.description}}
             </div>
           </div>
           <!-- End Comment Text -->

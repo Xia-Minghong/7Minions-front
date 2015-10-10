@@ -49,7 +49,7 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ion
     User.login $scope.loginData, (data) ->
       if data.hasOwnProperty('access_token')
         $scope.userData.token = data.token_type + ' ' + data.access_token
-        User.getProfile $scope.userData.token, "0", (data) ->
+        User.getProfile $scope.userData.token, "0", "students", (data) ->
           token = $scope.userData.token
           $scope.userData = data
           $scope.userData.token = token
@@ -85,7 +85,7 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ion
 #        $scope.closeLogin()
         alertPopup = $ionicPopup.alert(
           title: 'Sign Up Successful'
-          template: 'Please login')
+          template: 'Sign Up Successful, please login')
         alertPopup.show()
       else
         alertPopup = $ionicPopup.alert(

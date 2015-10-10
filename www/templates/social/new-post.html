@@ -14,7 +14,7 @@
   RIGHT SIDE BUTTON
   ====================== -->
   <ion-nav-buttons side="right">
-    <button class="button button-block  button-positive button-action">
+    <button class="button button-block  button-positive button-action" ng-click="submit()">
       Send/Post
     </button>
   </ion-nav-buttons>
@@ -25,7 +25,7 @@
   <!-- ======================
   MAIN CONTENT SECTION
   ====================== -->
-  <ion-content class="has-header gem-ion-content">
+  <ion-content class="has-header gem-ion-content" ng-init="initFeedback()">
     <!-- ======================
     GEMIONIC EDIT SECTION
     ====================== -->
@@ -33,20 +33,27 @@
       <div class="gem-poster">
         <div class="padding">
           <h4>
-            <img src="img/gemionic/profile-image.jpg" alt="" class="gem-circle profile-image"> <b>Maryiln</b>
+            <img src="img/gemionic/profile-image.jpg" alt="" class="gem-circle profile-image"> <b>To: {{feedbackEvent.organizer.name}}</b>
           </h4>
           <div class="padding">
           <!-- Textarea for editing text -->
-          <textarea>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta aspernatur, quisquam asperiores quas cum eius quo facere. Officia excepturi sunt consequuntur, assumenda iste iusto non fugit aliquid illum voluptatum, quae!</textarea>
+          <textarea placeholder="Your feedback for {{feedbackEvent.name}}" ng-model="feedbackData.content"></textarea>
           </div>
+          <div class="row">
+            <!--<div class="col col-50">-->
+              <span class="input-label">Satisfaction</span>
+            <!--</div>-->
+            <!--<div class="col">-->
+              <rating ng-model="feedbackData.rating" max="max"></rating>
+            <!--</div>-->
         </div>
       </div>
 
       <div class="row gem-poster-controls padding"><!-- Bottom Controls - extends '.row' with padding -->
-        <a href="#" class="col control"><i class="icon ion-email action"></i></a>
-        <a href="#" class="col control"><i class="icon ion-android-location action"></i></a>
-        <a href="#" class="col control"><i class="icon ion-ios7-cloud-upload action"></i></a>
-        <a href="#" class="col control"><i class="icon ion-android-send action"></i></a>
+        <a ng-click="back()" class="col control"><i class="icon ion-android-cancel action"></i></a>
+        <!--<a href="#" class="col control"><i class="icon ion-android-location action"></i></a>-->
+        <!--<a href="#" class="col control"><i class="icon ion-ios7-cloud-upload action"></i></a>-->
+        <a ng-click="submit()" class="col control"><i class="icon ion-android-send action"></i></a>
       </div>
     </div>
     <!-- ======================

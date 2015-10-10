@@ -2,6 +2,7 @@ angular.module('starter', [
   'ionic'
   'starter.controllers'
   'starter.services'
+  'ionic.rating'
 ]).run(($ionicPlatform) ->
   $ionicPlatform.ready ->
     # Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -23,6 +24,7 @@ angular.module('starter', [
     controller: 'AppCtrl'
 
   .state 'app.events',
+    cache: false,
     url: '/events'
     views:
       'menuContent':
@@ -31,6 +33,7 @@ angular.module('starter', [
 
 
   .state 'app.eventdetails',
+    cache: false,
     url: '/eventdetails/{eventId}'
     views:
       'menuContent':
@@ -50,16 +53,21 @@ angular.module('starter', [
     url: '/flist'
     views: 'menuContent': templateUrl: 'templates/social/friends.html')
 
-  .state('app.newpost',
-    url: '/newpost'
-    views: 'menuContent': templateUrl: 'templates/social/new-post.html')
+  .state 'app.newpost',
+    cache: false,
+    url: '/newpost/{feedbackEventId}'
+    views:
+      'menuContent':
+        templateUrl: 'templates/social/new-post.html'
+        controller: 'feedbackCtrl'
+
 
   .state('app.email',
     url: '/email'
     views: 'menuContent': templateUrl: 'templates/social/send-email.html')
 
   .state 'app.profile',
-    url: '/profile/{userId}'
+    url: '/profile/{userId}/{userType}'
     views:
       'menuContent':
         templateUrl: 'templates/social/profile.html'
