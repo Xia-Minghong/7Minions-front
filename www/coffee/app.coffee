@@ -100,7 +100,7 @@ angular.module('starter', [
         templateUrl: 'templates/social/social-invite-friend.html'
         controller: 'userCtrl'
   # if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise '/app/events'
+  $urlRouterProvider.otherwise '/app/start'
   return
 
 

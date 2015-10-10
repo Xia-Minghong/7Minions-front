@@ -36,7 +36,7 @@
       <!-- end topbar -->
 
       <!-- post image -->
-      <img src="img/gemionic/post-img.jpg" alt="" class="fluid-image">
+      <img src="{{ event.img_url }}" alt="" class="fluid-image">
 
       <!-- some stats (likes, hearts) -->
       <h1 class="button-white post-stat text-center"><a class="button-white" ng-click="likeEvent(event.id)"><i class="ion-heart gem-white"></i> {{ event.likes }}</a></h1>
@@ -51,9 +51,10 @@
     <!-- Post Content -->
     <div class="gem-post-content">
       <h2>{{ event.name }}</h2>
-      <p>Event Description</p>
+      <p>{{ event.description }}</p>
 
-      <p class="post-date"><i class="icon ion-clock"></i>  Event Time</p>
+      <p class="post-date"><i class="icon ion-clock"></i>  {{ parseDate(event.start_time) }} - {{ parseDate(event.end_time) }}</p>
+      <p class="post-date"><i class="icon ion-location"></i>  {{ event.location }}</p>
 
       <!-- Article Buttons-->
       <div class="row article-actions">
@@ -82,7 +83,7 @@
 
           <!-- Comment Text -->
           <div class="comment-text">
-            <h4 class="bold">Organizer</h4>
+            <h4 class="bold"></h4>
             <div class="comment">
               Organizer Description
             </div>

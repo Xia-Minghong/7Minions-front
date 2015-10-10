@@ -1,31 +1,66 @@
 App.services.factory 'Event', ($http) ->
 
-  data = [
-    {
-      "id":0
-      "name":"event1"
-      "likes":4
-    }
-    {
-      "id":1
-      "name":"event2"
-      "likes":5
-    }
-  ]
+  getEvents = (token, filters, callback) ->
+    $http(
+      url: App.host_addr + "/events/"
+      method: "GET"
+      headers:
+        "Authorization":token
+    )
 
-  getEvents = (filters, callback) ->
+    .success ((data, status, headers, config) ->
+      callback(data)
+      return
+    )
 
-    callback data
+    .error ((data, status, headers, config) ->
+      console.log("Process failed")
+      callback(data)
+      return
+    )
+
     return
 
-  getEvent = (id, callback) ->
+  getEvent = (token, id, callback) ->
+    $http(
+      url: App.host_addr + "/events/"+id+"/"
+      method: "GET"
+      headers:
+        "Authorization":token
+    )
 
-    callback data[id]
+    .success ((data, status, headers, config) ->
+      callback(data)
+      return
+    )
+
+    .error ((data, status, headers, config) ->
+      console.log("Process failed")
+      callback(data)
+      return
+    )
     return
 
-  likeEvent = (id, callback) ->
-    data[id].likes += 1
-    callback true
+  likeEvent = (token, id, callback) ->
+    $http(
+      url: App.host_addr + "/events/"+id+"/like/"
+      method: "GET"
+      headers:
+        "Authorization":token
+    )
+
+    .success ((data, status, headers, config) ->
+#      callback(data)
+      callback(true)
+      return
+    )
+
+    .error ((data, status, headers, config) ->
+      console.log("Process failed")
+      callback(false)
+#      callback(data)
+      return
+    )
     return
 
   registerEvent = (id, callback) ->

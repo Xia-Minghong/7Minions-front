@@ -124,7 +124,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services']).
       }
     }
   });
-  $urlRouterProvider.otherwise('/app/events');
+  $urlRouterProvider.otherwise('/app/start');
 });
 
 window.App = {};
@@ -135,7 +135,7 @@ App.services = angular.module('starter.services', []);
 
 App.host_addr = "http://localhost:8000";
 
-App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $timeout, $location, User) {
+App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $state, $timeout, $location, User) {
   $scope.goBack = function() {
     $ionicHistory.goBack();
   };
@@ -180,6 +180,7 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
           token = $scope.userData.token;
           $scope.userData = data;
           $scope.userData.token = token;
+          $state.go('app.events');
         });
         $scope.closeLogin();
       } else {
@@ -200,29 +201,47 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
     $scope.control.showLogin = false;
   };
   $scope.doSignUp = function() {
-    $timeout((function() {
-      $scope.closeLogin();
-    }), 1000);
+    console.log('Doing signup', $scope.signUpData);
+    User.signUp($scope.signUpData, function(data) {
+      var alertPopup;
+      if (data.hasOwnProperty('user')) {
+        $scope.control.showLogin = true;
+        alertPopup = $ionicPopup.alert({
+          title: 'Sign Up Successful',
+          template: 'Please login'
+        });
+        alertPopup.show();
+      } else {
+        alertPopup = $ionicPopup.alert({
+          title: 'Sign Up Failed',
+          template: 'Please retry'
+        });
+        alertPopup.show();
+      }
+    });
   };
 });
 
 App.controllers.controller('eventsCtrl', function($scope, $stateParams, Event) {
   $scope.initEvents = function() {
-    Event.getEvents([], function(data) {
+    Event.getEvents($scope.userData.token, [], function(data) {
       $scope.events = data;
+      console.log($scope.userData.token);
     });
   };
   $scope.initEvent = function() {
-    Event.getEvent($stateParams.eventId, function(data) {
+    Event.getEvent($scope.userData.token, $stateParams.eventId, function(data) {
       $scope.event = data;
     });
   };
   $scope.likeEvent = function(id) {
-    Event.likeEvent(id, function(response) {
+    Event.likeEvent($scope.userData.token, id, function(response) {
       if (response === true) {
+        $scope.initEvents();
+        $scope.initEvent();
         return;
       } else {
-        alert("fail");
+        console.log("like fail");
       }
     });
   };
@@ -234,6 +253,23 @@ App.controllers.controller('eventsCtrl', function($scope, $stateParams, Event) {
         alert("fail");
       }
     });
+  };
+  $scope.parseDate = function(timestamp) {
+    var date, datetime, i, suffix, time;
+    datetime = new Date(timestamp);
+    date = [datetime.getDate(), datetime.getMonth() + 1, datetime.getFullYear()];
+    time = [datetime.getHours(), datetime.getMinutes()];
+    suffix = time[0] < 12 ? 'AM' : 'PM';
+    time[0] = time[0] < 12 ? time[0] : time[0] - 12;
+    time[0] = time[0] || 12;
+    i = 1;
+    while (i < 3) {
+      if (time[i] < 10) {
+        time[i] = '0' + time[i];
+      }
+      i++;
+    }
+    return date.join('/') + ' ' + time.join(':') + ' ' + suffix;
   };
 });
 
@@ -251,27 +287,48 @@ App.controllers.controller('userCtrl', function($scope, $stateParams, $ionicHist
 });
 
 App.services.factory('Event', function($http) {
-  var data, getEvent, getEvents, likeEvent, registerEvent;
-  data = [
-    {
-      "id": 0,
-      "name": "event1",
-      "likes": 4
-    }, {
-      "id": 1,
-      "name": "event2",
-      "likes": 5
-    }
-  ];
-  getEvents = function(filters, callback) {
-    callback(data);
+  var getEvent, getEvents, likeEvent, registerEvent;
+  getEvents = function(token, filters, callback) {
+    $http({
+      url: App.host_addr + "/events/",
+      method: "GET",
+      headers: {
+        "Authorization": token
+      }
+    }).success((function(data, status, headers, config) {
+      callback(data);
+    })).error((function(data, status, headers, config) {
+      console.log("Process failed");
+      callback(data);
+    }));
   };
-  getEvent = function(id, callback) {
-    callback(data[id]);
+  getEvent = function(token, id, callback) {
+    $http({
+      url: App.host_addr + "/events/" + id + "/",
+      method: "GET",
+      headers: {
+        "Authorization": token
+      }
+    }).success((function(data, status, headers, config) {
+      callback(data);
+    })).error((function(data, status, headers, config) {
+      console.log("Process failed");
+      callback(data);
+    }));
   };
-  likeEvent = function(id, callback) {
-    data[id].likes += 1;
-    callback(true);
+  likeEvent = function(token, id, callback) {
+    $http({
+      url: App.host_addr + "/events/" + id + "/like/",
+      method: "GET",
+      headers: {
+        "Authorization": token
+      }
+    }).success((function(data, status, headers, config) {
+      callback(true);
+    })).error((function(data, status, headers, config) {
+      console.log("Process failed");
+      callback(false);
+    }));
   };
   registerEvent = function(id, callback) {
     callback(false);
@@ -285,7 +342,7 @@ App.services.factory('Event', function($http) {
 });
 
 App.services.factory('User', function($http) {
-  var getProfile, inviteFriend, login;
+  var getProfile, inviteFriend, login, signUp;
   login = function(loginData, callback) {
     $http({
       url: App.host_addr + "/o/token/",
@@ -315,6 +372,28 @@ App.services.factory('User', function($http) {
       callback(data);
     }));
   };
+  signUp = function(signUpData, callback) {
+    $http({
+      url: App.host_addr + "/students/signup/",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      data: {
+        "username": signUpData.username,
+        "password": signUpData.password,
+        "name": signUpData.name,
+        "department": signUpData.department,
+        "matric_no": signUpData.matric_no
+      }
+    }).success((function(data, status, headers, config) {
+      console.log(data);
+      callback(data);
+    })).error((function(data, status, headers, config) {
+      console.log("Login failed");
+      callback(data);
+    }));
+  };
   getProfile = function(token, uid, callback) {
     if (uid === "0") {
       uid = "me";
@@ -335,6 +414,7 @@ App.services.factory('User', function($http) {
   return {
     login: login,
     getProfile: getProfile,
-    inviteFriend: inviteFriend
+    inviteFriend: inviteFriend,
+    signUp: signUp
   };
 });

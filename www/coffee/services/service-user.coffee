@@ -34,6 +34,35 @@ App.services.factory 'User', ($http) ->
     return
 
 
+  signUp = (signUpData, callback) ->
+    $http(
+      url: App.host_addr + "/students/signup/"
+      method: "POST"
+      headers:
+        "Content-Type":"application/json"
+      data:
+        "username":signUpData.username
+        "password":signUpData.password
+        "name":signUpData.name
+        "department":signUpData.department
+        "matric_no":signUpData.matric_no
+    )
+
+    .success ((data, status, headers, config) ->
+      console.log data
+      callback(data)
+      return
+    )
+
+    .error ((data, status, headers, config) ->
+      console.log("Login failed")
+      callback(data)
+      return
+    )
+
+    return
+
+
   getProfile = (token, uid, callback) ->
     if uid == "0"
       uid = "me"
@@ -57,4 +86,5 @@ App.services.factory 'User', ($http) ->
     login       : login
     getProfile  : getProfile
     inviteFriend: inviteFriend
+    signUp      : signUp
   }

@@ -1,4 +1,4 @@
-App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $timeout, $location, User) ->
+App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $state, $timeout, $location, User) ->
 
   $scope.goBack = () ->
     $ionicHistory.goBack()
@@ -53,6 +53,7 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ion
           token = $scope.userData.token
           $scope.userData = data
           $scope.userData.token = token
+          $state.go('app.events')
           return
         $scope.closeLogin()
       else
@@ -77,10 +78,21 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ion
     return
 
   $scope.doSignUp = ->
-    $timeout (->
-      $scope.closeLogin()
+    console.log 'Doing signup', $scope.signUpData
+    User.signUp $scope.signUpData, (data) ->
+      if data.hasOwnProperty('user')
+        $scope.control.showLogin = true
+#        $scope.closeLogin()
+        alertPopup = $ionicPopup.alert(
+          title: 'Sign Up Successful'
+          template: 'Please login')
+        alertPopup.show()
+      else
+        alertPopup = $ionicPopup.alert(
+          title: 'Sign Up Failed'
+          template: 'Please retry')
+        alertPopup.show()
       return
-    ), 1000
     return
 
 
