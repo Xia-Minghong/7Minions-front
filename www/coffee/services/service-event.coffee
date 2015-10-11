@@ -111,7 +111,7 @@ App.services.factory 'Event', ($http) ->
   deregisterEvent = (token, id, callback) ->
     $http(
       url: App.host_addr + "/students/"+id+"/deregister_event/"
-      method: "POST"
+      method: "DELETE"
       headers:
         "Authorization":token
     )

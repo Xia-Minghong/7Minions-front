@@ -106,7 +106,7 @@ App.services.factory 'User', ($http) ->
   removeFriend = (token, id, callback) ->
     $http(
       url: App.host_addr + "/students/"+id+"/removefriend/"
-      method: "POST"
+      method: "DELETE"
       headers:
         "Authorization":token
     )

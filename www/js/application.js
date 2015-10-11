@@ -46,10 +46,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   }).state('app.flist', {
+    cache: false,
     url: '/flist',
     views: {
       'menuContent': {
-        templateUrl: 'templates/social/friends.html'
+        templateUrl: 'templates/social/friends.html',
+        controller: 'userCtrl'
       }
     }
   }).state('app.newpost', {
@@ -137,7 +139,7 @@ App.controllers = angular.module('starter.controllers', []);
 
 App.services = angular.module('starter.services', []);
 
-App.host_addr = "http://localhost:8080";
+App.host_addr = "http://10.27.138.40:8080";
 
 App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $state, $timeout, $location, User) {
   $scope.goBack = function() {
@@ -161,6 +163,7 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
   }).then(function(modal) {
     $scope.modal = modal;
     if (!$scope.isLogged()) {
+      $scope.go('/app/start');
       $scope.login();
     }
   });
@@ -289,9 +292,23 @@ App.controllers.controller('eventsCtrl', function($scope, $state, $stateParams, 
     });
   };
   $scope.deregisterEvent = function(id) {
-    Event.registerEvent($scope.userData.token, id, function(response) {
+    Event.deregisterEvent($scope.userData.token, id, function(response) {
+      var i, ref, value;
       if (response === true) {
         console.log("deregister success");
+        if ($scope.event && $scope.event.id === id) {
+          $scope.event.registered = false;
+          console.log("event");
+        } else {
+          console.log("events");
+          ref = $scope.events;
+          for (i in ref) {
+            value = ref[i];
+            if (value.id === id) {
+              $scope.events[i].registered = false;
+            }
+          }
+        }
         return;
       } else {
         console.log(data);
@@ -437,7 +454,7 @@ App.services.factory('Event', function($http) {
   deregisterEvent = function(token, id, callback) {
     $http({
       url: App.host_addr + "/students/" + id + "/deregister_event/",
-      method: "POST",
+      method: "DELETE",
       headers: {
         "Authorization": token
       }
@@ -587,7 +604,7 @@ App.services.factory('User', function($http) {
   removeFriend = function(token, id, callback) {
     $http({
       url: App.host_addr + "/students/" + id + "/removefriend/",
-      method: "POST",
+      method: "DELETE",
       headers: {
         "Authorization": token
       }

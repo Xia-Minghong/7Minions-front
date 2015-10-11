@@ -79,7 +79,7 @@
         </div>
         <div class="news-more-action">
           <button class="button-clear padding-right" ng-click="registerEvent(event.id)" ng-hide="event.registered"><h1><i class="icon ion-plus"></i></h1></button>
-          <button class="button-clear padding-right" ng-click="registerEvent(event.id)" ng-show="event.registered"><h1><i class="icon ion-close gem-color-danger"></i></h1></button>
+          <button class="button-clear padding-right" ng-click="deregisterEvent(event.id)" ng-show="event.registered"><h1><i class="icon ion-close gem-color-danger"></i></h1></button>
         </div>
         <div class="row">
           <span class="gem-label warning" ng-repeat="tag in event.tag_set" ng-click="go('/app/')">{{tag.tag}}</span>&nbsp;

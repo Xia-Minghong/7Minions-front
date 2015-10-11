@@ -31,7 +31,6 @@ angular.module('starter', [
         templateUrl: 'templates/social/events.html'
         controller: 'eventsCtrl'
 
-
   .state 'app.eventdetails',
     cache: false,
     url: '/eventdetails/{eventId}'
@@ -50,8 +49,13 @@ angular.module('starter', [
     views: 'menuContent': templateUrl: 'templates/social/friend-grid.html')
 
   .state('app.flist',
+    cache: false,
     url: '/flist'
-    views: 'menuContent': templateUrl: 'templates/social/friends.html')
+    views:
+      'menuContent':
+        templateUrl: 'templates/social/friends.html'
+        controller: 'userCtrl'
+  )
 
   .state 'app.newpost',
     cache: false,
@@ -121,4 +125,4 @@ App.controllers = angular.module('starter.controllers', [])
 # Services Globals
 App.services = angular.module('starter.services', [])
 
-App.host_addr = "http://localhost:8080"
+App.host_addr = "http://10.27.138.40:8080"

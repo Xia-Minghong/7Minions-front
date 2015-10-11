@@ -23,6 +23,7 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ion
     $scope.modal = modal
     # Login if not logged in
     if !$scope.isLogged()
+      $scope.go('/app/start')
       $scope.login()
     return
   # Triggered in the login modal to close it

@@ -61,8 +61,8 @@
         <button class="button button-small gem-primary uppercase" ng-click="registerEvent(event.id)" ng-hide="event.registered">
           <i class="icon ion-plus"></i> Register
         </button>
-        <button class="button button-small gem-danger uppercase" ng-click="registerEvent(event.id)" ng-show="event.registered">
-          <i class="icon ion-plus"></i> Deregister
+        <button class="button button-small gem-danger uppercase" ng-click="deregisterEvent(event.id)" ng-show="event.registered">
+          <i class="icon ion-close"></i> Deregister
         </button>
         <button class="button button-small gem-success uppercase" ng-click="likeEvent(event.id)">
           <i class="icon ion-heart"></i> Like

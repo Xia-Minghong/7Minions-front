@@ -58,9 +58,17 @@ App.controllers.controller 'eventsCtrl', ($scope, $state, $stateParams, Event) -
     return
 
   $scope.deregisterEvent = (id) ->
-    Event.registerEvent $scope.userData.token, id, (response) ->
+    Event.deregisterEvent $scope.userData.token, id, (response) ->
       if response == true
         console.log("deregister success")
+        if $scope.event && $scope.event.id == id
+          $scope.event.registered = false
+          console.log("event")
+        else
+          console.log("events")
+          for i, value of $scope.events
+            if value.id == id
+              $scope.events[i].registered = false
         return
       else
         console.log(data)
