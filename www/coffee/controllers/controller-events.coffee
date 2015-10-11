@@ -1,8 +1,5 @@
 App.controllers.controller 'eventsCtrl', ($scope, $state, $stateParams, Event) ->
 
-  $scope.go = (url)->
-    window.location.href = url
-    return
 
   $scope.initEvents = () ->
     Event.getEvents $scope.userData.token, [], (data) ->
@@ -34,6 +31,8 @@ App.controllers.controller 'eventsCtrl', ($scope, $state, $stateParams, Event) -
     Event.bookmarkEvent $scope.userData.token, id, (response) ->
       if response == true
         console.log("bookmark success")
+        $scope.initEvents()
+        $scope.initEvent()
         return
       else
         console.log("bookmark fail")
@@ -41,13 +40,34 @@ App.controllers.controller 'eventsCtrl', ($scope, $state, $stateParams, Event) -
     return
 
   $scope.registerEvent = (id) ->
-    Event.registerEvent id, (response) ->
+    Event.registerEvent $scope.userData.token, id, (response) ->
       if response == true
+        console.log("register success")
+        if $scope.event && $scope.event.id == id
+          $scope.event.registered = true
+          console.log("event")
+        else
+          console.log("events")
+          for i, value of $scope.events
+            if value.id == id
+              $scope.events[i].registered = true
         return
       else
-        alert("fail")
+        console.log(data)
       return
     return
+
+  $scope.deregisterEvent = (id) ->
+    Event.registerEvent $scope.userData.token, id, (response) ->
+      if response == true
+        console.log("deregister success")
+        return
+      else
+        console.log(data)
+      return
+    return
+
+
 
   $scope.parseDate = (timestamp) ->
     datetime = new Date timestamp

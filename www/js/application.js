@@ -137,7 +137,7 @@ App.controllers = angular.module('starter.controllers', []);
 
 App.services = angular.module('starter.services', []);
 
-App.host_addr = "http://localhost:8000";
+App.host_addr = "http://localhost:8080";
 
 App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $state, $timeout, $location, User) {
   $scope.goBack = function() {
@@ -227,9 +227,6 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
 });
 
 App.controllers.controller('eventsCtrl', function($scope, $state, $stateParams, Event) {
-  $scope.go = function(url) {
-    window.location.href = url;
-  };
   $scope.initEvents = function() {
     Event.getEvents($scope.userData.token, [], function(data) {
       $scope.events = data;
@@ -259,6 +256,8 @@ App.controllers.controller('eventsCtrl', function($scope, $state, $stateParams, 
     Event.bookmarkEvent($scope.userData.token, id, function(response) {
       if (response === true) {
         console.log("bookmark success");
+        $scope.initEvents();
+        $scope.initEvent();
         return;
       } else {
         console.log("bookmark fail");
@@ -266,11 +265,36 @@ App.controllers.controller('eventsCtrl', function($scope, $state, $stateParams, 
     });
   };
   $scope.registerEvent = function(id) {
-    Event.registerEvent(id, function(response) {
+    Event.registerEvent($scope.userData.token, id, function(response) {
+      var i, ref, value;
       if (response === true) {
+        console.log("register success");
+        if ($scope.event && $scope.event.id === id) {
+          $scope.event.registered = true;
+          console.log("event");
+        } else {
+          console.log("events");
+          ref = $scope.events;
+          for (i in ref) {
+            value = ref[i];
+            if (value.id === id) {
+              $scope.events[i].registered = true;
+            }
+          }
+        }
         return;
       } else {
-        alert("fail");
+        console.log(data);
+      }
+    });
+  };
+  $scope.deregisterEvent = function(id) {
+    Event.registerEvent($scope.userData.token, id, function(response) {
+      if (response === true) {
+        console.log("deregister success");
+        return;
+      } else {
+        console.log(data);
       }
     });
   };
@@ -339,7 +363,7 @@ App.controllers.controller('userCtrl', function($scope, $stateParams, $ionicHist
 });
 
 App.services.factory('Event', function($http) {
-  var bookmarkEvent, getEvent, getEvents, likeEvent, registerEvent;
+  var attendEvent, bookmarkEvent, deregisterEvent, getEvent, getEvents, likeEvent, registerEvent;
   getEvents = function(token, filters, callback) {
     $http({
       url: App.host_addr + "/events/",
@@ -384,27 +408,68 @@ App.services.factory('Event', function($http) {
   };
   bookmarkEvent = function(token, id, callback) {
     $http({
-      url: App.host_addr + "/bookmarks/" + id + "/",
-      method: "GET",
+      url: App.host_addr + "/students/" + id + "/bookmark/",
+      method: "POST",
       headers: {
         "Authorization": token
       }
     }).success((function(data, status, headers, config) {
+      console.log(data);
       callback(true);
     })).error((function(data, status, headers, config) {
-      console.log("Process failed");
       callback(false);
     }));
   };
-  registerEvent = function(id, callback) {
-    callback(false);
+  registerEvent = function(token, id, callback) {
+    $http({
+      url: App.host_addr + "/students/" + id + "/register_event/",
+      method: "POST",
+      headers: {
+        "Authorization": token
+      }
+    }).success((function(data, status, headers, config) {
+      console.log(data);
+      callback(true);
+    })).error((function(data, status, headers, config) {
+      callback(false);
+    }));
+  };
+  deregisterEvent = function(token, id, callback) {
+    $http({
+      url: App.host_addr + "/students/" + id + "/deregister_event/",
+      method: "POST",
+      headers: {
+        "Authorization": token
+      }
+    }).success((function(data, status, headers, config) {
+      console.log(data);
+      callback(true);
+    })).error((function(data, status, headers, config) {
+      callback(false);
+    }));
+  };
+  attendEvent = function(token, id, callback) {
+    $http({
+      url: App.host_addr + "/students/" + id + "/attend_event/",
+      method: "POST",
+      headers: {
+        "Authorization": token
+      }
+    }).success((function(data, status, headers, config) {
+      console.log(data);
+      callback(true);
+    })).error((function(data, status, headers, config) {
+      callback(false);
+    }));
   };
   return {
     getEvents: getEvents,
     getEvent: getEvent,
     likeEvent: likeEvent,
+    bookmarkEvent: bookmarkEvent,
     registerEvent: registerEvent,
-    bookmarkEvent: bookmarkEvent
+    deregisterEvent: deregisterEvent,
+    attendEvent: attendEvent
   };
 });
 
@@ -436,7 +501,7 @@ App.services.factory('Feedback', function($http) {
 });
 
 App.services.factory('User', function($http) {
-  var getProfile, inviteFriend, login, signUp;
+  var addFriend, getProfile, inviteFriend, login, removeFriend, signUp;
   login = function(loginData, callback) {
     $http({
       url: App.host_addr + "/o/token/",
@@ -505,11 +570,41 @@ App.services.factory('User', function($http) {
   inviteFriend = function(token, friend_id, callback) {
     callback(token);
   };
+  addFriend = function(token, id, callback) {
+    $http({
+      url: App.host_addr + "/students/" + id + "/addfriend/",
+      method: "POST",
+      headers: {
+        "Authorization": token
+      }
+    }).success((function(data, status, headers, config) {
+      console.log(data);
+      callback(true);
+    })).error((function(data, status, headers, config) {
+      callback(false);
+    }));
+  };
+  removeFriend = function(token, id, callback) {
+    $http({
+      url: App.host_addr + "/students/" + id + "/removefriend/",
+      method: "POST",
+      headers: {
+        "Authorization": token
+      }
+    }).success((function(data, status, headers, config) {
+      console.log(data);
+      callback(true);
+    })).error((function(data, status, headers, config) {
+      callback(false);
+    }));
+  };
   return {
     login: login,
+    signUp: signUp,
     getProfile: getProfile,
     inviteFriend: inviteFriend,
-    signUp: signUp
+    addFriend: addFriend,
+    removeFriend: removeFriend
   };
 });
 

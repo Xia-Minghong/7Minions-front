@@ -33,7 +33,7 @@
         <!--</div>-->
       </div>
       <!-- Background Image -->
-      <img src="{{profilData.img_url}}" alt="" class="fluid-image profile-background-image" style="vertical-align:middle;">
+      <img src="{{profileData.img_url}}" alt="" class="fluid-image profile-background-image" style="vertical-align:middle;">
     </div>
     <!-- ======================
     END GEMIONIC PROFILE SECTION
@@ -44,46 +44,140 @@
       <a class="tab-item active">
         <i class="ion-ios7-paper"></i> My Events
       </a>
-      <a class="tab-item">
-        <i class="ion-images"></i> Photos
-      </a>
-      <a class="tab-item">
-        <i class="ion-social-youtube"></i> Videos
-      </a>
     </div>
 
-    <div class="profile-feed">
-      <div class="row">
-        <div class="col">
-          <div class="profile-post">
-            <img src="img/gemionic/yellow-rect.jpg" alt="">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus, quam.</p>
-            <span class="profile-post-stat"><i class="icon ion-heart"></i> 23 | <i class="icon ion-chatbubble"></i> 23</span>
-            <span class="profile-post-stat"><i class="icon ion-ios7-clock"></i> 23 days ago</span>
-          </div>
-          <div class="profile-post">
-            <img src="img/gemionic/orange.jpg" alt="">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus, quam.</p>
-            <span class="profile-post-stat"><i class="icon ion-heart"></i> 23 | <i class="icon ion-chatbubble"></i> 23</span>
-            <span class="profile-post-stat"><i class="icon ion-ios7-clock"></i> 23 days ago</span>
-          </div>
-        </div>
-        <div class="col">
-          <div class="profile-post">
-            <img src="img/gemionic/tall-blue.jpg" alt="">
-            <h4 class="bold">Blue</h4>
-            <span class="profile-post-stat"><i class="icon ion-heart"></i> 23 | <i class="icon ion-chatbubble"></i> 23</span>
-            <span class="profile-post-stat"><i class="icon ion-ios7-clock"></i> 23 days ago</span>
-          </div>
-          <div class="profile-post">
-            <img src="img/gemionic/post-img-rect.jpg" alt="">
-            <h4 class="bold">Blue</h4>
-            <span class="profile-post-stat"><i class="icon ion-heart"></i> 23 | <i class="icon ion-chatbubble"></i> 23</span>
-            <span class="profile-post-stat"><i class="icon ion-ios7-clock"></i> 23 days ago</span>
-          </div>
-        </div>
-      </div>
+    <!-- Subheader - using ionic's subheader. '.gem-position-relative' is to shift the child icon to the right -->
+    <div class="bar bar-header bar-positive gem-position-relative">
+      <h2 class="title text-left">
+        <i class="ion-checkmark-circled pos-absolute-right"></i> 3 New Notifications
+      </h2>
     </div>
+    <!-- End subheader -->
+    <!-- Title separator -->
+    <div class="separator-title">Upcoming Events</div>
+    <!-- End Title separator -->
+    <!-- Gemionic Timeline -->
+    <ul class="timeline">
+      <!-- timeline item -->
+      <li>
+        <!-- thumb - absolutely positioned left -->
+        <div class="timeline-thumb timeline-thumb gem-success no-image">  <!-- use '.no-image' if you want to use an icon instead -->
+          <i class="ion-heart"></i>
+        </div>
+        <!-- Text details -->
+        <div class="timeline-item">
+          <h5 class="bold">Title</h5>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
+          <div class="timeline-stats">
+            <i class="ion-heart"></i> 23
+            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
+          </div>
+        </div>
+        <!-- End Text Details -->
+      </li>
+      <!-- end timeline item -->
+
+      <!-- timeline item -->
+      <li>
+        <!-- thumb - absolutely positioned left -->
+        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
+        <!-- Text details -->
+        <div class="timeline-item">
+          <h5 class="bold">Title</h5>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
+          <div class="timeline-stats">
+            <i class="ion-heart"></i> 23
+            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
+          </div>
+        </div>
+        <!-- End Text Details -->
+      </li>
+      <!-- End timeline item -->
+
+      <!-- timeline item -->
+      <li>
+        <!-- thumb - absolutely positioned left -->
+        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
+        <!-- Text details -->
+        <div class="timeline-item">
+          <h5 class="bold">Title</h5>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
+          <div class="timeline-stats">
+            <i class="ion-heart"></i> 23
+            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
+          </div>
+        </div>
+        <!-- End Text Details -->
+      </li>
+      <!-- timeline item -->
+
+    </ul>
+    <!-- End gemionic timeline -->
+
+    <!-- Title separator -->
+    <div class="separator-title">Past Events</div>
+    <!-- End Title separator -->
+
+
+    <!-- Gemionic Timeline -->
+    <ul class="timeline">
+      <!-- timeline item -->
+      <li>
+        <!-- thumb image -->
+        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
+        <!-- end thumb -->
+
+        <!-- timeline-text -->
+        <div class="timeline-item">
+          <h5 class="bold">Title</h5>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
+          <div class="timeline-stats">
+            <i class="ion-heart"></i> 23
+            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
+          </div>
+        </div>
+        <!-- end timeline text -->
+      </li>
+      <!-- end timeline item -->
+
+      <!-- timeline item -->
+      <li>
+        <!-- thumb image -->
+        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
+        <!-- end thumb -->
+
+        <!-- timeline-text -->
+        <div class="timeline-item">
+          <h5 class="bold">Title</h5>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
+          <div class="timeline-stats">
+            <i class="ion-heart"></i> 23
+            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
+          </div>
+        </div>
+        <!-- end timeline text -->
+      </li>
+      <!-- end timeline item -->
+
+      <!-- timeline item -->
+      <li>
+        <!-- thumb image -->
+        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
+        <!-- end thumb -->
+
+        <!-- timeline-text -->
+        <div class="timeline-item">
+          <h5 class="bold">Title</h5>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
+          <div class="timeline-stats">
+            <i class="ion-heart"></i> 23
+            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
+          </div>
+        </div>
+        <!-- end timeline text -->
+      </li>
+
+    </ul>
 
 
   </ion-content>

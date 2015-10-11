@@ -16,7 +16,7 @@
             <button menu-toggle="left" class="button button-small button-icon icon ion-navicon gem-white"></button></div>
           </div>
           <div class="col col-75 gem-text-right gem-white">
-            <span class="gem-label warning" ng-repeat="tag in event.tag_set">{{tag.tag}}</span>
+            <span class="gem-label warning" ng-repeat="tag in event.tag_set">{{tag.tag}}</span>&nbsp;
             <!--<span class="gem-label success">Tag2</span>-->
             <!--<span class="gem-label danger">Tag3</span>-->
             <!--<span class="gem-label default">Tag4</span>-->
@@ -58,13 +58,19 @@
 
       <!-- Article Buttons-->
       <div class="row article-actions">
-        <button class="button button-small gem-primary uppercase" ng-click="registerEvent(event.id)">
+        <button class="button button-small gem-primary uppercase" ng-click="registerEvent(event.id)" ng-hide="event.registered">
           <i class="icon ion-plus"></i> Register
+        </button>
+        <button class="button button-small gem-danger uppercase" ng-click="registerEvent(event.id)" ng-show="event.registered">
+          <i class="icon ion-plus"></i> Deregister
         </button>
         <button class="button button-small gem-success uppercase" ng-click="likeEvent(event.id)">
           <i class="icon ion-heart"></i> Like
         </button>
-        <button class="button button-small gem-success uppercase" ng-click="bookmarkEvent(event.id)">
+        <button class="button button-small gem-success uppercase" ng-click="bookmarkEvent(event.id)" ng-show="userData.bookmarks.indexOf(event.id)!=-1">
+          <i class="icon ion-checkmark"></i> Bookmarked
+        </button>
+        <button class="button button-small gem-success uppercase" ng-click="bookmarkEvent(event.id)" ng-hide="userData.bookmarks.indexOf(event.id)!=-1">
           <i class="icon ion-android-bookmark"></i> Bookmark
         </button>
         <a class="button button-small gem-default uppercase" href="#/app/newpost/{{event.id}}">
@@ -78,11 +84,11 @@
       <!-- End Article Buttons-->
 
       <!-- Comment Section -->
-      <div class="article-comments" ng-click="go('#/app/profile/'+event.organizer.id+'/organizers')">
+      <div class="article-comments" ng-click="go('/app/profile/'+event.organizer.id+'/organizers')">
         <!-- Comment Item -->
         <div class="comment-item" ng-click="">
           <!-- Commenter thumb -->
-          <img src="img/gemionic/profile-image.jpg" alt="" class="comment-profile-pic">
+          <img src="{{event.organizer.img_url}}" alt="" class="comment-profile-pic">
 
           <!-- Comment Text -->
           <div class="comment-text">

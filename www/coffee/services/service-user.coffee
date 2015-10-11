@@ -81,10 +81,57 @@ App.services.factory 'User', ($http) ->
     return
 
 
+  addFriend = (token, id, callback) ->
+    $http(
+      url: App.host_addr + "/students/"+id+"/addfriend/"
+      method: "POST"
+      headers:
+        "Authorization":token
+    )
+
+    .success ((data, status, headers, config) ->
+      console.log(data)
+      callback(true)
+      return
+    )
+
+    .error ((data, status, headers, config) ->
+#      console.log("Process failed")
+      callback(false)
+      #      callback(data)
+      return
+    )
+    return
+
+  removeFriend = (token, id, callback) ->
+    $http(
+      url: App.host_addr + "/students/"+id+"/removefriend/"
+      method: "POST"
+      headers:
+        "Authorization":token
+    )
+
+    .success ((data, status, headers, config) ->
+      console.log(data)
+      callback(true)
+      return
+    )
+
+    .error ((data, status, headers, config) ->
+#      console.log("Process failed")
+      callback(false)
+      #      callback(data)
+      return
+    )
+    return
 
   {
     login       : login
+    signUp      : signUp
     getProfile  : getProfile
     inviteFriend: inviteFriend
-    signUp      : signUp
+  addFriend : addFriend
+  removeFriend : removeFriend
+
+
   }

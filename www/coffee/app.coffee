@@ -121,4 +121,4 @@ App.controllers = angular.module('starter.controllers', [])
 # Services Globals
 App.services = angular.module('starter.services', [])
 
-App.host_addr = "http://localhost:8000"
+App.host_addr = "http://localhost:8080"

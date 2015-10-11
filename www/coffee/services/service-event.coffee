@@ -65,34 +65,102 @@ App.services.factory 'Event', ($http) ->
 
   bookmarkEvent = (token, id, callback) ->
     $http(
-      url: App.host_addr + "/bookmarks/"+id+"/"
-      method: "GET"
+      url: App.host_addr + "/students/"+id+"/bookmark/"
+      method: "POST"
       headers:
         "Authorization":token
     )
 
     .success ((data, status, headers, config) ->
-#      callback(data)
+      console.log(data)
       callback(true)
       return
     )
 
     .error ((data, status, headers, config) ->
-      console.log("Process failed")
+#      console.log("Process failed")
       callback(false)
       #      callback(data)
       return
     )
     return
 
-  registerEvent = (id, callback) ->
-    callback false
+  registerEvent = (token, id, callback) ->
+    $http(
+      url: App.host_addr + "/students/"+id+"/register_event/"
+      method: "POST"
+      headers:
+        "Authorization":token
+    )
+
+    .success ((data, status, headers, config) ->
+      console.log(data)
+      callback(true)
+      return
+    )
+
+    .error ((data, status, headers, config) ->
+#      console.log("Process failed")
+      callback(false)
+      #      callback(data)
+      return
+    )
     return
+
+
+  deregisterEvent = (token, id, callback) ->
+    $http(
+      url: App.host_addr + "/students/"+id+"/deregister_event/"
+      method: "POST"
+      headers:
+        "Authorization":token
+    )
+
+    .success ((data, status, headers, config) ->
+      console.log(data)
+      callback(true)
+      return
+    )
+
+    .error ((data, status, headers, config) ->
+#      console.log("Process failed")
+      callback(false)
+      #      callback(data)
+      return
+    )
+    return
+
+
+  attendEvent = (token, id, callback) ->
+    $http(
+      url: App.host_addr + "/students/"+id+"/attend_event/"
+      method: "POST"
+      headers:
+        "Authorization":token
+    )
+
+    .success ((data, status, headers, config) ->
+      console.log(data)
+      callback(true)
+      return
+    )
+
+    .error ((data, status, headers, config) ->
+#      console.log("Process failed")
+      callback(false)
+      #      callback(data)
+      return
+    )
+    return
+
+
 
   {
     getEvents     : getEvents,
     getEvent      : getEvent,
     likeEvent     : likeEvent
+    bookmarkEvent : bookmarkEvent,
     registerEvent : registerEvent,
-  bookmarkEvent : bookmarkEvent
+    deregisterEvent : deregisterEvent,
+    attendEvent   : attendEvent
   }
