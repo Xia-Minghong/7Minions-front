@@ -15,7 +15,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     controller: 'AppCtrl'
   }).state('app.events', {
     cache: false,
-    url: '/events',
+    url: '/events/{tag}',
     views: {
       'menuContent': {
         templateUrl: 'templates/social/events.html',
@@ -71,6 +71,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   }).state('app.profile', {
+    cache: false,
     url: '/profile/{userId}/{userType}',
     views: {
       'menuContent': {
@@ -139,11 +140,14 @@ App.controllers = angular.module('starter.controllers', []);
 
 App.services = angular.module('starter.services', []);
 
-App.host_addr = "http://10.27.138.40:8080";
+App.host_addr = "http://localhost:8000";
 
 App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $state, $timeout, $location, User) {
   $scope.goBack = function() {
     $ionicHistory.goBack();
+  };
+  $scope.stateGo = function(dest) {
+    $state.go(dest);
   };
   $scope.go = function(path) {
     return $location.path(path);
@@ -231,10 +235,20 @@ App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicMod
 
 App.controllers.controller('eventsCtrl', function($scope, $state, $stateParams, Event) {
   $scope.initEvents = function() {
-    Event.getEvents($scope.userData.token, [], function(data) {
-      $scope.events = data;
-      console.log($scope.userData.token);
-    });
+    console.log("if" + $stateParams.tag.length === 0);
+    if ($stateParams.tag.length !== 0) {
+      Event.getEvents($scope.userData.token, null, function(data) {
+        $scope.events = data;
+        console.log("notag" + $stateParams.tag);
+      });
+      $scope.search = $stateParams.tag;
+      return;
+    } else {
+      Event.getEvents($scope.userData.token, null, function(data) {
+        $scope.events = data;
+        console.log("notag" + $stateParams.tag);
+      });
+    }
   };
   $scope.initEvent = function() {
     if ($stateParams.eventId === null) {
@@ -255,24 +269,34 @@ App.controllers.controller('eventsCtrl', function($scope, $state, $stateParams, 
       }
     });
   };
-  $scope.bookmarkEvent = function(id) {
-    Event.bookmarkEvent($scope.userData.token, id, function(response) {
-      if (response === true) {
+  $scope.bookmarkEvent = function(event) {
+    Event.bookmarkEvent($scope.userData.token, event.id, function(response) {
+      if (response) {
         console.log("bookmark success");
-        $scope.initEvents();
-        $scope.initEvent();
+        $scope.userData.bookmarked_events.push(event);
         return;
       } else {
         console.log("bookmark fail");
       }
     });
   };
-  $scope.registerEvent = function(id) {
-    Event.registerEvent($scope.userData.token, id, function(response) {
+  $scope.unBookmarkEvent = function(event) {
+    Event.unBookmarkEvent($scope.userData.token, event.id, function(response) {
+      if (response) {
+        console.log("unbookmark success");
+        $scope.userData.bookmarked_events.pop(event);
+        return;
+      } else {
+        console.log("unbookmark fail");
+      }
+    });
+  };
+  $scope.registerEvent = function(event) {
+    Event.registerEvent($scope.userData.token, event.id, function(response) {
       var i, ref, value;
       if (response === true) {
         console.log("register success");
-        if ($scope.event && $scope.event.id === id) {
+        if ($scope.event && $scope.event.id === event.id) {
           $scope.event.registered = true;
           console.log("event");
         } else {
@@ -280,7 +304,7 @@ App.controllers.controller('eventsCtrl', function($scope, $state, $stateParams, 
           ref = $scope.events;
           for (i in ref) {
             value = ref[i];
-            if (value.id === id) {
+            if (value.id === event.id) {
               $scope.events[i].registered = true;
             }
           }
@@ -291,12 +315,12 @@ App.controllers.controller('eventsCtrl', function($scope, $state, $stateParams, 
       }
     });
   };
-  $scope.deregisterEvent = function(id) {
-    Event.deregisterEvent($scope.userData.token, id, function(response) {
+  $scope.deregisterEvent = function(event) {
+    Event.deregisterEvent($scope.userData.token, event.id, function(response) {
       var i, ref, value;
       if (response === true) {
         console.log("deregister success");
-        if ($scope.event && $scope.event.id === id) {
+        if ($scope.event && $scope.event.id === event.id) {
           $scope.event.registered = false;
           console.log("event");
         } else {
@@ -304,16 +328,51 @@ App.controllers.controller('eventsCtrl', function($scope, $state, $stateParams, 
           ref = $scope.events;
           for (i in ref) {
             value = ref[i];
-            if (value.id === id) {
+            if (value.id === event.id) {
               $scope.events[i].registered = false;
             }
           }
         }
         return;
       } else {
-        console.log(data);
+        console.log(response);
       }
     });
+  };
+  $scope.attendEvent = function(event) {
+    Event.attendEvent($scope.userData.token, event.id, function(response) {
+      var i, ref, value;
+      if (response === true) {
+        console.log("attend success");
+        if ($scope.event && $scope.event.id === event.id) {
+          $scope.event.attended = true;
+          console.log("event");
+        } else {
+          console.log("events");
+          ref = $scope.events;
+          for (i in ref) {
+            value = ref[i];
+            if (value.id === event.id) {
+              $scope.events[i].attended = true;
+            }
+          }
+        }
+        return;
+      } else {
+        console.log(response);
+      }
+    });
+  };
+  $scope.isBookmarked = function(id) {
+    var index, ref, value;
+    ref = $scope.userData.bookmarked_events;
+    for (index in ref) {
+      value = ref[index];
+      if (value.id === id) {
+        return true;
+      }
+    }
+    return false;
   };
   $scope.parseDate = function(timestamp) {
     var date, datetime, i, suffix, time;
@@ -351,7 +410,7 @@ App.controllers.controller('feedbackCtrl', function($scope, $state, $stateParams
           template: 'Thank you for your feedback!'
         });
         alertPopup.show();
-        $ionicHistory.goBack();
+        alertPopup.then($ionicHistory.goBack);
       } else {
         alertPopup = $ionicPopup.alert({
           title: 'Feedback Failed',
@@ -366,34 +425,78 @@ App.controllers.controller('feedbackCtrl', function($scope, $state, $stateParams
   };
 });
 
-App.controllers.controller('userCtrl', function($scope, $stateParams, $ionicHistory, User) {
+App.controllers.controller('userCtrl', function($scope, $state, $stateParams, $ionicHistory, User) {
   $scope.inviteFriend = function() {
     User.inviteFriend($scope.userData.token, 1, function(data) {
       alert(data);
     });
   };
   $scope.initProfile = function() {
-    User.getProfile($scope.userData.token, $stateParams.userId, $stateParams.userType, function(data) {
-      $scope.profileData = data;
-    });
+    console.log("init Profile" + $stateParams.userId + $stateParams.userType);
+    if ($stateParams.userType === "students" && parseInt($stateParams.userId) === parseInt($scope.userData.user.id)) {
+      console.log("self");
+      User.getProfile($scope.userData.token, "0", "students", function(data) {
+        $scope.profileData = data;
+      });
+    } else {
+      User.getProfile($scope.userData.token, $stateParams.userId, $stateParams.userType, function(data) {
+        $scope.profileData = data;
+      });
+    }
+  };
+  $scope.parseDate = function(timestamp) {
+    var date, datetime, i, suffix, time;
+    datetime = new Date(timestamp);
+    date = [datetime.getDate(), datetime.getMonth() + 1, datetime.getFullYear()];
+    time = [datetime.getHours(), datetime.getMinutes()];
+    suffix = time[0] < 12 ? 'AM' : 'PM';
+    time[0] = time[0] < 12 ? time[0] : time[0] - 12;
+    time[0] = time[0] || 12;
+    i = 1;
+    while (i < 3) {
+      if (time[i] < 10) {
+        time[i] = '0' + time[i];
+      }
+      i++;
+    }
+    return date.join('/') + ' ' + time.join(':') + ' ' + suffix;
+  };
+  $scope.stateGo = function(dest) {
+    $state.go(dest);
   };
 });
 
 App.services.factory('Event', function($http) {
-  var attendEvent, bookmarkEvent, deregisterEvent, getEvent, getEvents, likeEvent, registerEvent;
+  var attendEvent, bookmarkEvent, deregisterEvent, getEvent, getEvents, likeEvent, registerEvent, unBookmarkEvent;
   getEvents = function(token, filters, callback) {
-    $http({
-      url: App.host_addr + "/events/",
-      method: "GET",
-      headers: {
-        "Authorization": token
-      }
-    }).success((function(data, status, headers, config) {
-      callback(data);
-    })).error((function(data, status, headers, config) {
-      console.log("Process failed");
-      callback(data);
-    }));
+    if (false) {
+      console.log("fil" + filters);
+      $http({
+        url: App.host_addr + "/tags/" + filters + "/get_events/",
+        method: "GET",
+        headers: {
+          "Authorization": token
+        }
+      }).success((function(data, status, headers, config) {
+        callback([data]);
+      })).error((function(data, status, headers, config) {
+        console.log("Process failed");
+        callback([data]);
+      }));
+    } else {
+      $http({
+        url: App.host_addr + "/events/",
+        method: "GET",
+        headers: {
+          "Authorization": token
+        }
+      }).success((function(data, status, headers, config) {
+        callback(data);
+      })).error((function(data, status, headers, config) {
+        console.log("Process failed");
+        callback(data);
+      }));
+    }
   };
   getEvent = function(token, id, callback) {
     $http({
@@ -425,14 +528,36 @@ App.services.factory('Event', function($http) {
   };
   bookmarkEvent = function(token, id, callback) {
     $http({
-      url: App.host_addr + "/students/" + id + "/bookmark/",
+      url: App.host_addr + "/students/" + id + "/bookmark_event/",
       method: "POST",
       headers: {
         "Authorization": token
       }
     }).success((function(data, status, headers, config) {
       console.log(data);
-      callback(true);
+      if (data.hasOwnProperty("id")) {
+        callback(true);
+      } else {
+        callback(false);
+      }
+    })).error((function(data, status, headers, config) {
+      callback(false);
+    }));
+  };
+  unBookmarkEvent = function(token, id, callback) {
+    $http({
+      url: App.host_addr + "/students/" + id + "/unbookmark_event/",
+      method: "DELETE",
+      headers: {
+        "Authorization": token
+      }
+    }).success((function(data, status, headers, config) {
+      console.log(data);
+      if (data.hasOwnProperty("id")) {
+        callback(true);
+      } else {
+        callback(false);
+      }
     })).error((function(data, status, headers, config) {
       callback(false);
     }));
@@ -445,8 +570,11 @@ App.services.factory('Event', function($http) {
         "Authorization": token
       }
     }).success((function(data, status, headers, config) {
-      console.log(data);
-      callback(true);
+      if (data.hasOwnProperty("id")) {
+        callback(true);
+      } else {
+        callback(false);
+      }
     })).error((function(data, status, headers, config) {
       callback(false);
     }));
@@ -468,13 +596,19 @@ App.services.factory('Event', function($http) {
   attendEvent = function(token, id, callback) {
     $http({
       url: App.host_addr + "/students/" + id + "/attend_event/",
-      method: "POST",
+      method: "PUT",
       headers: {
         "Authorization": token
       }
     }).success((function(data, status, headers, config) {
-      console.log(data);
-      callback(true);
+      if (data.hasOwnProperty("id")) {
+        callback(true);
+        console.log("attend success");
+        console.log(data);
+      } else {
+        callback(false);
+        console.log("attend fail");
+      }
     })).error((function(data, status, headers, config) {
       callback(false);
     }));
@@ -486,7 +620,8 @@ App.services.factory('Event', function($http) {
     bookmarkEvent: bookmarkEvent,
     registerEvent: registerEvent,
     deregisterEvent: deregisterEvent,
-    attendEvent: attendEvent
+    attendEvent: attendEvent,
+    unBookmarkEvent: unBookmarkEvent
   };
 });
 

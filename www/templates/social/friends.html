@@ -42,13 +42,13 @@
     ====================== -->
     <ul class="list gem-friend-list">
           <!-- Single Friend Item -->
-          <li class="item" ng-click="go('/app/profile/{{friend.id}}/students')">
+          <li class="item" ng-repeat="friend in userData.friends | orderBy:'name'" ng-click="go('/app/profile/{{friend.user.id}}/students')" >
             <!-- thumb image (round) -->
-            <img src="img/gemionic/profile-image.jpg" alt="" class="gem-friend-list-profile-pic"> <!-- End Image - absolute left/top -->
+            <img src="{{friend.img_url}}" alt="" class="gem-friend-list-profile-pic"> <!-- End Image - absolute left/top -->
 
             <!-- Friend Name, Status Icon and Status Update -->
             <div class="gem-friend-list-text">
-              <b>Marilyn</b>
+              <b>{{friend.name}}</b>
               <span class="signature"><i class="icon ion-record gem-color-default"></i> Offline</span>
             </div>
             <!-- end -->

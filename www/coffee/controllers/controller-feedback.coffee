@@ -16,7 +16,7 @@ App.controllers.controller 'feedbackCtrl', ($scope, $state, $stateParams, $ionic
           template: 'Thank you for your feedback!'
         )
         alertPopup.show()
-        $ionicHistory.goBack()
+        alertPopup.then($ionicHistory.goBack)
       else
         alertPopup = $ionicPopup.alert(
           title: 'Feedback Failed'

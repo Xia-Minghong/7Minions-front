@@ -4,6 +4,10 @@ App.controllers.controller 'AppCtrl', ($scope, $ionicPlatform, $ionicModal, $ion
     $ionicHistory.goBack()
     return
 
+  $scope.stateGo = (dest)->
+    $state.go(dest)
+    return
+
   $scope.go = (path) ->
       $location.path(path)
 

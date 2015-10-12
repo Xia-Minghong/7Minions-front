@@ -1,5 +1,5 @@
 <!-- Title for the ion view -->
-<ion-view title="Events">
+<ion-view title="All Events">
   <!-- ======================
   LEFT SIDE BUTTON
   ====================== -->
@@ -14,7 +14,7 @@
   RIGHT SIDE BUTTON
   ====================== -->
   <ion-nav-buttons side="right">
-    <button class="button button-icon icon ion-search"></button>
+    <button class="button button-icon icon ion-person" ng-click="go('/app/profile/{{ userData.user.id }}/students')"></button>
   </ion-nav-buttons>
   <!-- ======================
   /END RIGHT SIDE BUTTON
@@ -52,8 +52,8 @@
         <div class="media-social-stats stat-label"> <!-- Absolutely positioned right. '.news-media' is relative -->
           <span class="news-comment-summary">
             <button ng-click="likeEvent(event.id)" class="button-clear"><i class="icon ion-heart"></i> {{ event.likes }}</button>
-            <button ng-click="bookmarkEvent(event.id)" class="button-clear" ng-show="userData.bookmars.indexOf(event.id)!=-1"><i class="icon ion-checkmark"></i></button>
-            <button ng-click="bookmarkEvent(event.id)" class="button-clear" ng-hide="userData.bookmars.indexOf(event.id)!=-1"><i class="icon ion-android-bookmark"></i></button>
+            <button ng-click="unBookmarkEvent(event)" class="button-clear" ng-show="isBookmarked(event.id)"><i class="icon ion-checkmark"></i></button>
+            <button ng-click="bookmarkEvent(event)" class="button-clear" ng-hide="isBookmarked(event.id)"><i class="icon ion-android-bookmark"></i></button>
             <!--<i class="icon ion-chatbubble"></i> 3-->
           </span>
         </div>
@@ -78,11 +78,11 @@
           </div>
         </div>
         <div class="news-more-action">
-          <button class="button-clear padding-right" ng-click="registerEvent(event.id)" ng-hide="event.registered"><h1><i class="icon ion-plus"></i></h1></button>
-          <button class="button-clear padding-right" ng-click="deregisterEvent(event.id)" ng-show="event.registered"><h1><i class="icon ion-close gem-color-danger"></i></h1></button>
+          <button class="button-clear padding-right" ng-click="registerEvent(event)" ng-hide="event.registered"><h1><i class="icon ion-plus"></i></h1></button>
+          <button class="button-clear padding-right" ng-click="deregisterEvent(event)" ng-show="event.registered"><h1><i class="icon ion-close gem-color-danger"></i></h1></button>
         </div>
         <div class="row">
-          <span class="gem-label warning" ng-repeat="tag in event.tag_set" ng-click="go('/app/')">{{tag.tag}}</span>&nbsp;
+          <span class="gem-label warning" ng-repeat="tag in event.tag_set" ng-click="go('/app/events/{{tag.tag}}')">{{tag.tag}}</span>&nbsp;
         </div>
       </div>
       <!-- ======================

@@ -44,6 +44,9 @@
       <a class="tab-item active">
         <i class="ion-ios7-paper"></i> My Events
       </a>
+      <a class="tab-item" ng-click="stateGo('app.events')">
+      <i class="ion-ios7-paper"></i> Recommended for Me
+    </a>
     </div>
 
     <!-- Subheader - using ionic's subheader. '.gem-position-relative' is to shift the child icon to the right -->
@@ -54,183 +57,78 @@
     </div>
     <!-- End subheader -->
     <!-- Title separator -->
-    <div class="separator-title">Bookmarked Events</div>
+    <div class="separator-title" ng-hide="profileData.bookmarked_events==null||profileData.bookmarked_events.length==0">{{profileData.bookmarked_events.length}} Bookmarked Events</div>
     <!-- End Title separator -->
     <!-- Gemionic Timeline -->
     <ul class="timeline">
       <!-- timeline item -->
-      <li>
+      <li ng-repeat="bookmarked_event in profileData.bookmarked_events | orderBy:'start_time'" ng-click="go('/app/eventdetails/{{bookmarked_event.id}}')">
         <!-- thumb - absolutely positioned left -->
-        <div class="timeline-thumb timeline-thumb gem-success no-image">  <!-- use '.no-image' if you want to use an icon instead -->
-          <i class="ion-heart"></i>
-        </div>
+        <img src="{{bookmarked_event.organizer.img_url}}" alt="" class="timeline-thumb">
         <!-- Text details -->
         <div class="timeline-item">
-          <h5 class="bold">Title</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
+          <h5 class="bold">{{bookmarked_event.name}}</h5>
+          <p>{{bookmarked_event.description}}</p>
           <div class="timeline-stats">
-            <i class="ion-heart"></i> 23
-            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
+            <i class="ion-location"></i> {{bookmarked_event.location}}
+            <span class="pos-absolute-right"><i class="ion-android-clock"></i> {{parseDate(bookmarked_event.start_time)}}</span>
           </div>
         </div>
         <!-- End Text Details -->
       </li>
       <!-- end timeline item -->
 
-      <!-- timeline item -->
-      <li>
-        <!-- thumb - absolutely positioned left -->
-        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
-        <!-- Text details -->
-        <div class="timeline-item">
-          <h5 class="bold">Title</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
-          <div class="timeline-stats">
-            <i class="ion-heart"></i> 23
-            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
-          </div>
-        </div>
-        <!-- End Text Details -->
-      </li>
-      <!-- End timeline item -->
-
-      <!-- timeline item -->
-      <li>
-        <!-- thumb - absolutely positioned left -->
-        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
-        <!-- Text details -->
-        <div class="timeline-item">
-          <h5 class="bold">Title</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
-          <div class="timeline-stats">
-            <i class="ion-heart"></i> 23
-            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
-          </div>
-        </div>
-        <!-- End Text Details -->
-      </li>
-      <!-- timeline item -->
 
     </ul>
     <!-- Title separator -->
-    <div class="separator-title">Upcoming Events</div>
+    <div class="separator-title">{{profileData.registered_events.length}} Upcoming Registered Events</div>
     <!-- End Title separator -->
     <!-- Gemionic Timeline -->
     <ul class="timeline">
       <!-- timeline item -->
-      <li>
+      <li ng-repeat="registered_event in profileData.registered_events" ng-click="go('/app/eventdetails/{{registered_event.id}}')">
         <!-- thumb - absolutely positioned left -->
-        <div class="timeline-thumb timeline-thumb gem-success no-image">  <!-- use '.no-image' if you want to use an icon instead -->
-          <i class="ion-heart"></i>
-        </div>
+        <img src="{{registered_event.organizer.img_url}}" alt="" class="timeline-thumb">
         <!-- Text details -->
         <div class="timeline-item">
-          <h5 class="bold">Title</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
+          <h5 class="bold">{{registered_event.name}}</h5>
+          <p>{{registered_event.description}}</p>
           <div class="timeline-stats">
-            <i class="ion-heart"></i> 23
-            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
+            <i class="ion-location"></i> {{registered_event.location}}
+            <span class="pos-absolute-right"><i class="ion-android-clock"></i> {{parseDate(registered_event.start_time)}}</span>
           </div>
         </div>
         <!-- End Text Details -->
       </li>
       <!-- end timeline item -->
 
-      <!-- timeline item -->
-      <li>
-        <!-- thumb - absolutely positioned left -->
-        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
-        <!-- Text details -->
-        <div class="timeline-item">
-          <h5 class="bold">Title</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
-          <div class="timeline-stats">
-            <i class="ion-heart"></i> 23
-            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
-          </div>
-        </div>
-        <!-- End Text Details -->
-      </li>
-      <!-- End timeline item -->
-
-      <!-- timeline item -->
-      <li>
-        <!-- thumb - absolutely positioned left -->
-        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
-        <!-- Text details -->
-        <div class="timeline-item">
-          <h5 class="bold">Title</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
-          <div class="timeline-stats">
-            <i class="ion-heart"></i> 23
-            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
-          </div>
-        </div>
-        <!-- End Text Details -->
-      </li>
-      <!-- timeline item -->
 
     </ul>
     <!-- End gemionic timeline -->
 
     <!-- Title separator -->
-    <div class="separator-title">Past Events</div>
+    <div class="separator-title" ng-hide="profileData.attended_event==null||profileData.attended_event.length==0">{{profileData.attended_event.length}} Past Events</div>
     <!-- End Title separator -->
 
 
     <!-- Gemionic Timeline -->
     <ul class="timeline">
-      <!-- timeline item -->
-      <li>
-        <!-- thumb image -->
-        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
-        <!-- end thumb -->
 
-        <!-- timeline-text -->
-        <div class="timeline-item">
-          <h5 class="bold">Title</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
-          <div class="timeline-stats">
-            <i class="ion-heart"></i> 23
-            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
-          </div>
-        </div>
-        <!-- end timeline text -->
-      </li>
       <!-- end timeline item -->
 
       <!-- timeline item -->
-      <li>
+      <li ng-repeat="attended_event in profileData.attended_events" ng-click="go('/app/eventdetails/{{attended_event.id}}')">
         <!-- thumb image -->
-        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
+        <img src="{{attended_event.organizer.img_url}}" alt="" class="timeline-thumb">
         <!-- end thumb -->
 
         <!-- timeline-text -->
         <div class="timeline-item">
-          <h5 class="bold">Title</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
+          <h5 class="bold">{{attended_event.name}}</h5>
+          <p>{{attended_event.description}}</p>
           <div class="timeline-stats">
-            <i class="ion-heart"></i> 23
-            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
-          </div>
-        </div>
-        <!-- end timeline text -->
-      </li>
-      <!-- end timeline item -->
-
-      <!-- timeline item -->
-      <li>
-        <!-- thumb image -->
-        <img src="img/gemionic/profile-image.jpg" alt="" class="timeline-thumb">
-        <!-- end thumb -->
-
-        <!-- timeline-text -->
-        <div class="timeline-item">
-          <h5 class="bold">Title</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, error.....</p>
-          <div class="timeline-stats">
-            <i class="ion-heart"></i> 23
-            <span class="pos-absolute-right"><i class="ion-android-clock"></i> 2 days ago</span>
+            <i class="ion-location"></i> {{attended_event.location}}
+            <span class="pos-absolute-right"><i class="ion-android-clock"></i> {{parseDate(attended_event.start_time)}}</span>
           </div>
         </div>
         <!-- end timeline text -->

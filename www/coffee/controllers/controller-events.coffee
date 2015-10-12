@@ -2,10 +2,31 @@ App.controllers.controller 'eventsCtrl', ($scope, $state, $stateParams, Event) -
 
 
   $scope.initEvents = () ->
-    Event.getEvents $scope.userData.token, [], (data) ->
-      $scope.events = data
-      console.log($scope.userData.token)
+    console.log("if"+$stateParams.tag.length==0 )
+    if $stateParams.tag.length!=0
+      Event.getEvents $scope.userData.token, null , (data) ->
+        $scope.events = data
+        console.log("notag"+$stateParams.tag)
+        return
+      $scope.search = $stateParams.tag
+#      Event.getEvents $scope.userData.token, [$stateParams.tag], (data) ->
+#        for event of data
+#          discard = true
+#          console.log(event.tag_set)
+#          for tag of event.tag_set
+#            if tag.tag == $stateParams.tag
+#              discard = false
+#          if discard
+#            data.pop(event)
+#        $scope.events = data
+#        console.log("tag"+data)
+#        return
       return
+    else
+      Event.getEvents $scope.userData.token, null , (data) ->
+        $scope.events = data
+        console.log("notag"+$stateParams.tag)
+        return
     return
 
   $scope.initEvent = () ->
@@ -27,29 +48,45 @@ App.controllers.controller 'eventsCtrl', ($scope, $state, $stateParams, Event) -
       return
     return
 
-  $scope.bookmarkEvent = (id) ->
-    Event.bookmarkEvent $scope.userData.token, id, (response) ->
-      if response == true
+  $scope.bookmarkEvent = (event) ->
+    Event.bookmarkEvent $scope.userData.token, event.id, (response) ->
+      if response
         console.log("bookmark success")
-        $scope.initEvents()
-        $scope.initEvent()
+        $scope.userData.bookmarked_events.push(event)
+#        if $scope.event && $scope.event.id == id
+#          $scope.initEvent()
+#        $scope.initEvents()
         return
       else
         console.log("bookmark fail")
       return
     return
 
-  $scope.registerEvent = (id) ->
-    Event.registerEvent $scope.userData.token, id, (response) ->
+  $scope.unBookmarkEvent = (event) ->
+    Event.unBookmarkEvent $scope.userData.token, event.id, (response) ->
+      if response
+        console.log("unbookmark success")
+        $scope.userData.bookmarked_events.pop(event)
+        #        if $scope.event && $scope.event.id == id
+        #          $scope.initEvent()
+        #        $scope.initEvents()
+        return
+      else
+        console.log("unbookmark fail")
+      return
+    return
+
+  $scope.registerEvent = (event) ->
+    Event.registerEvent $scope.userData.token, event.id, (response) ->
       if response == true
         console.log("register success")
-        if $scope.event && $scope.event.id == id
+        if $scope.event && $scope.event.id == event.id
           $scope.event.registered = true
           console.log("event")
         else
           console.log("events")
           for i, value of $scope.events
-            if value.id == id
+            if value.id == event.id
               $scope.events[i].registered = true
         return
       else
@@ -57,24 +94,49 @@ App.controllers.controller 'eventsCtrl', ($scope, $state, $stateParams, Event) -
       return
     return
 
-  $scope.deregisterEvent = (id) ->
-    Event.deregisterEvent $scope.userData.token, id, (response) ->
+  $scope.deregisterEvent = (event) ->
+    Event.deregisterEvent $scope.userData.token, event.id, (response) ->
       if response == true
         console.log("deregister success")
-        if $scope.event && $scope.event.id == id
+        if $scope.event && $scope.event.id == event.id
           $scope.event.registered = false
           console.log("event")
         else
           console.log("events")
           for i, value of $scope.events
-            if value.id == id
+            if value.id == event.id
               $scope.events[i].registered = false
         return
       else
-        console.log(data)
+        console.log(response)
       return
     return
 
+
+  $scope.attendEvent = (event) ->
+    Event.attendEvent $scope.userData.token, event.id, (response) ->
+      if response == true
+        console.log("attend success")
+        if $scope.event && $scope.event.id == event.id
+          $scope.event.attended = true
+          console.log("event")
+        else
+          console.log("events")
+          for i, value of $scope.events
+            if value.id == event.id
+              $scope.events[i].attended = true
+        return
+      else
+        console.log(response)
+      return
+    return
+
+
+  $scope.isBookmarked = (id) ->
+    for index, value of $scope.userData.bookmarked_events
+      if value.id == id
+        return true
+    return false
 
 
   $scope.parseDate = (timestamp) ->

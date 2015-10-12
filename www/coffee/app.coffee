@@ -25,7 +25,7 @@ angular.module('starter', [
 
   .state 'app.events',
     cache: false,
-    url: '/events'
+    url: '/events/{tag}'
     views:
       'menuContent':
         templateUrl: 'templates/social/events.html'
@@ -71,6 +71,7 @@ angular.module('starter', [
     views: 'menuContent': templateUrl: 'templates/social/send-email.html')
 
   .state 'app.profile',
+    cache: false,
     url: '/profile/{userId}/{userType}'
     views:
       'menuContent':
@@ -125,4 +126,4 @@ App.controllers = angular.module('starter.controllers', [])
 # Services Globals
 App.services = angular.module('starter.services', [])
 
-App.host_addr = "http://10.27.138.40:8080"
+App.host_addr = "http://localhost:8000"

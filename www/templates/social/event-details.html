@@ -58,28 +58,38 @@
 
       <!-- Article Buttons-->
       <div class="row article-actions">
-        <button class="button button-small gem-primary uppercase" ng-click="registerEvent(event.id)" ng-hide="event.registered">
+        <button class="button button-small gem-success uppercase" ng-show="event.attended" disabled>
+          <i class="icon ion-checkmark-circled"></i> Checked in
+        </button>
+        <button class="button button-small gem-primary uppercase" ng-click="attendEvent(event)" ng-show="event.registered && !event.attended">
+          <i class="icon ion-plus"></i> Check in
+        </button>
+        <button class="button button-small gem-primary uppercase" ng-click="registerEvent(event)" ng-hide="event.registered">
           <i class="icon ion-plus"></i> Register
         </button>
-        <button class="button button-small gem-danger uppercase" ng-click="deregisterEvent(event.id)" ng-show="event.registered">
+        <button class="button button-small gem-danger uppercase" ng-click="deregisterEvent(event)" ng-show="event.registered && !event.attended">
           <i class="icon ion-close"></i> Deregister
         </button>
+
+        <!--More Actions-->
+        <!--<div class="button button-small gem-outline">-->
+          <!--<i class="icon ion-more gem-icon"></i>-->
+        <!--</div>-->
+      </div>
+
+      <div class="row article-actions">
         <button class="button button-small gem-success uppercase" ng-click="likeEvent(event.id)">
           <i class="icon ion-heart"></i> Like
         </button>
-        <button class="button button-small gem-success uppercase" ng-click="bookmarkEvent(event.id)" ng-show="userData.bookmarks.indexOf(event.id)!=-1">
-          <i class="icon ion-checkmark"></i> Bookmarked
+        <button class="button button-small gem-danger uppercase" ng-click="unBookmarkEvent(event)" ng-show="isBookmarked(event.id)">
+          <i class="icon ion-checkmark"></i> Unbookmark
         </button>
-        <button class="button button-small gem-success uppercase" ng-click="bookmarkEvent(event.id)" ng-hide="userData.bookmarks.indexOf(event.id)!=-1">
+        <button class="button button-small gem-success uppercase" ng-click="bookmarkEvent(event)" ng-hide="isBookmarked(event.id)">
           <i class="icon ion-android-bookmark"></i> Bookmark
         </button>
         <a class="button button-small gem-default uppercase" href="#/app/newpost/{{event.id}}">
           <i class="icon ion-compose"></i> Feedback
         </a>
-        <!--More Actions-->
-        <!--<div class="button button-small gem-outline">-->
-          <!--<i class="icon ion-more gem-icon"></i>-->
-        <!--</div>-->
       </div>
       <!-- End Article Buttons-->
 
@@ -101,6 +111,27 @@
         </div>
           <!-- End Comment item -->
       </div>
+
+    </div>
+    <!-- standard small title heading -->
+    <div class="uppercase label-title" ng-hide="event.participants.length==0">{{event.participants.length}} participants</div>
+    <!-- end standard small title heading -->
+
+    <!-- ======================
+    GEMIONIC FRIEND LIST MODULE
+    ====================== -->
+    <div class="gem-friend-grid clearfix">
+
+      <!-- Friend List Item  -->
+      <div class="friend-item" ng-repeat="participant in event.participants">
+        <!-- Round Image here. Fluid width and Colored ring stating status -->
+        <img src="{{participant.img_url}}" alt="" class="gem-friend-list-profile-pic">
+        <!-- Online Status Icon -->
+        <div class="online-status"><i class="icon ion-record gem-color-default"></i> Offline</div>
+        <!-- Friend name -->
+        <p class="friend-name">{{participant.name}}</p>
+      </div>
+      <!-- End Friend List Item  -->
 
     </div>
   </ion-content>

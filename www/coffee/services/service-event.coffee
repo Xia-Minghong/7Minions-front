@@ -1,23 +1,44 @@
 App.services.factory 'Event', ($http) ->
 
   getEvents = (token, filters, callback) ->
-    $http(
-      url: App.host_addr + "/events/"
-      method: "GET"
-      headers:
-        "Authorization":token
-    )
+    # Always query all events
+    if false
+      console.log("fil"+filters)
+      $http(
+          url: App.host_addr + "/tags/"+filters+"/get_events/"
+          method: "GET"
+          headers:
+            "Authorization":token
+        )
 
-    .success ((data, status, headers, config) ->
-      callback(data)
-      return
-    )
+        .success ((data, status, headers, config) ->
+          callback([data])
+          return
+        )
 
-    .error ((data, status, headers, config) ->
-      console.log("Process failed")
-      callback(data)
-      return
-    )
+        .error ((data, status, headers, config) ->
+          console.log("Process failed")
+          callback([data])
+          return
+        )
+    else
+      $http(
+        url: App.host_addr + "/events/"
+        method: "GET"
+        headers:
+          "Authorization":token
+      )
+
+      .success ((data, status, headers, config) ->
+        callback(data)
+        return
+      )
+
+      .error ((data, status, headers, config) ->
+        console.log("Process failed")
+        callback(data)
+        return
+      )
 
     return
 
@@ -65,7 +86,7 @@ App.services.factory 'Event', ($http) ->
 
   bookmarkEvent = (token, id, callback) ->
     $http(
-      url: App.host_addr + "/students/"+id+"/bookmark/"
+      url: App.host_addr + "/students/"+id+"/bookmark_event/"
       method: "POST"
       headers:
         "Authorization":token
@@ -73,7 +94,35 @@ App.services.factory 'Event', ($http) ->
 
     .success ((data, status, headers, config) ->
       console.log(data)
-      callback(true)
+      if data.hasOwnProperty("id")
+        callback(true)
+      else
+        callback(false)
+      return
+    )
+
+    .error ((data, status, headers, config) ->
+#      console.log("Process failed")
+      callback(false)
+      #      callback(data)
+      return
+    )
+    return
+
+  unBookmarkEvent = (token, id, callback) ->
+    $http(
+      url: App.host_addr + "/students/"+id+"/unbookmark_event/"
+      method: "DELETE"
+      headers:
+        "Authorization":token
+    )
+
+    .success ((data, status, headers, config) ->
+      console.log(data)
+      if data.hasOwnProperty("id")
+        callback(true)
+      else
+        callback(false)
       return
     )
 
@@ -94,8 +143,10 @@ App.services.factory 'Event', ($http) ->
     )
 
     .success ((data, status, headers, config) ->
-      console.log(data)
-      callback(true)
+      if data.hasOwnProperty("id")
+        callback(true)
+      else
+        callback(false)
       return
     )
 
@@ -134,14 +185,19 @@ App.services.factory 'Event', ($http) ->
   attendEvent = (token, id, callback) ->
     $http(
       url: App.host_addr + "/students/"+id+"/attend_event/"
-      method: "POST"
+      method: "PUT"
       headers:
         "Authorization":token
     )
 
     .success ((data, status, headers, config) ->
-      console.log(data)
-      callback(true)
+      if data.hasOwnProperty("id")
+        callback(true)
+        console.log("attend success")
+        console.log(data)
+      else
+        callback(false)
+        console.log("attend fail")
       return
     )
 
@@ -163,4 +219,5 @@ App.services.factory 'Event', ($http) ->
     registerEvent : registerEvent,
     deregisterEvent : deregisterEvent,
     attendEvent   : attendEvent
+    unBookmarkEvent:unBookmarkEvent
   }
