@@ -1,5 +1,5 @@
 <!-- Title for header bar (refer to www/index.html) -->
-<ion-view title="My Profile">
+<ion-view title="Profile">
   <!-- ======================
   LEFT SIDE BUTTON
   ====================== -->
@@ -28,9 +28,9 @@
         <!-- Profile Description text -->
         <p>{{ profileData.description }}</p>
         <!-- text stats -->
-        <!--<div class="gem-center">-->
-          <!--<i class="icon ion-chatbubble"></i> 2003 | <i class="icon ion-heart"></i> 2044-->
-        <!--</div>-->
+        <div class="gem-center">
+          <button ng-click="addFriend()" class="button-clear"><i class="icon ion-person-add"></i> Add Friend</button>
+        </div>
       </div>
       <!-- Background Image -->
       <img src="{{profileData.img_url}}" alt="" class="fluid-image profile-background-image" style="vertical-align:middle;">
@@ -50,12 +50,37 @@
     </div>
 
     <!-- Subheader - using ionic's subheader. '.gem-position-relative' is to shift the child icon to the right -->
-    <div class="bar bar-header bar-positive gem-position-relative">
-      <h2 class="title text-left">
-        <i class="ion-checkmark-circled pos-absolute-right"></i> 3 New Notifications
-      </h2>
-    </div>
+    <!--<div class="bar bar-header bar-positive gem-position-relative">-->
+      <!--<h2 class="title text-left">-->
+        <!--<i class="ion-checkmark-circled pos-absolute-right"></i> 3 New Notifications-->
+      <!--</h2>-->
+    <!--</div>-->
     <!-- End subheader -->
+    <!-- Title separator -->
+    <div class="separator-title" ng-hide="profileData.event_set==null||profileData.event_set.length==0">{{profileData.event_set.length}} Events</div>
+    <!-- End Title separator -->
+    <!-- Gemionic Timeline -->
+    <ul class="timeline">
+      <!-- timeline item -->
+      <li ng-repeat="event in profileData.event_set" ng-click="go('/app/eventdetails/{{event.id}}')">
+        <!-- thumb - absolutely positioned left -->
+        <img src="{{profileData.img_url}}" alt="" class="timeline-thumb">
+        <!-- Text details -->
+        <div class="timeline-item">
+          <h5 class="bold">{{event.name}}</h5>
+          <p>{{event.description}}</p>
+          <div class="timeline-stats">
+            <i class="ion-location"></i> {{event.location}}
+            <span class="pos-absolute-right"><i class="ion-android-clock"></i> {{parseDate(event.start_time)}}</span>
+          </div>
+        </div>
+        <!-- End Text Details -->
+      </li>
+      <!-- end timeline item -->
+
+
+    </ul>
+    <!-- End gemionic timeline -->
     <!-- Title separator -->
     <div class="separator-title" ng-hide="profileData.bookmarked_events==null||profileData.bookmarked_events.length==0">{{profileData.bookmarked_events.length}} Bookmarked Events</div>
     <!-- End Title separator -->
@@ -81,12 +106,12 @@
 
     </ul>
     <!-- Title separator -->
-    <div class="separator-title">{{profileData.registered_events.length}} Upcoming Registered Events</div>
+    <div class="separator-title" ng-hide="profileData.registered_events==null||profileData.registered_events.length==0"> Upcoming Registered Events</div>
     <!-- End Title separator -->
     <!-- Gemionic Timeline -->
     <ul class="timeline">
       <!-- timeline item -->
-      <li ng-repeat="registered_event in profileData.registered_events" ng-click="go('/app/eventdetails/{{registered_event.id}}')">
+      <li ng-repeat="registered_event in profileData.registered_events" ng-click="go('/app/eventdetails/{{registered_event.id}}')" ng-if="!registered_event.attended">
         <!-- thumb - absolutely positioned left -->
         <img src="{{registered_event.organizer.img_url}}" alt="" class="timeline-thumb">
         <!-- Text details -->
@@ -107,7 +132,7 @@
     <!-- End gemionic timeline -->
 
     <!-- Title separator -->
-    <div class="separator-title" ng-hide="profileData.attended_event==null||profileData.attended_event.length==0">{{profileData.attended_event.length}} Past Events</div>
+    <div class="separator-title" ng-hide="profileData.registered_events==null||profileData.registered_events.length==0"> Attended Events</div>
     <!-- End Title separator -->
 
 
@@ -117,7 +142,7 @@
       <!-- end timeline item -->
 
       <!-- timeline item -->
-      <li ng-repeat="attended_event in profileData.attended_events" ng-click="go('/app/eventdetails/{{attended_event.id}}')">
+      <li ng-repeat="attended_event in profileData.registered_events" ng-click="go('/app/eventdetails/{{attended_event.id}}')" ng-if="attended_event.attended">
         <!-- thumb image -->
         <img src="{{attended_event.organizer.img_url}}" alt="" class="timeline-thumb">
         <!-- end thumb -->

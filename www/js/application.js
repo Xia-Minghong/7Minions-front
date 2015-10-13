@@ -425,7 +425,7 @@ App.controllers.controller('feedbackCtrl', function($scope, $state, $stateParams
   };
 });
 
-App.controllers.controller('userCtrl', function($scope, $state, $stateParams, $ionicHistory, User) {
+App.controllers.controller('userCtrl', function($scope, $state, $stateParams, $ionicHistory, $ionicPopup, User) {
   $scope.inviteFriend = function() {
     User.inviteFriend($scope.userData.token, 1, function(data) {
       alert(data);
@@ -440,7 +440,10 @@ App.controllers.controller('userCtrl', function($scope, $state, $stateParams, $i
       });
     } else {
       User.getProfile($scope.userData.token, $stateParams.userId, $stateParams.userType, function(data) {
+        console.log($stateParams.userId);
+        console.log("else");
         $scope.profileData = data;
+        console.log("data" + data.name);
       });
     }
   };
@@ -463,6 +466,22 @@ App.controllers.controller('userCtrl', function($scope, $state, $stateParams, $i
   };
   $scope.stateGo = function(dest) {
     $state.go(dest);
+  };
+  $scope.addFriend = function() {
+    console.log("add" + $stateParams.userId);
+    User.addFriend($scope.userData.token, $stateParams.userId, function(response) {
+      var alertPopup;
+      if (response) {
+        alertPopup = $ionicPopup.alert({
+          title: 'Friend Added',
+          template: 'Friend Added'
+        });
+        alertPopup.show();
+        return;
+      } else {
+        console.log(response);
+      }
+    });
   };
 });
 
@@ -709,14 +728,18 @@ App.services.factory('User', function($http) {
     if (uid === "0") {
       uid = "me";
     }
+    console.log(uid);
+    console.log(type);
+    console.log(App.host_addr + "/" + type + "/" + uid + "/");
     return $http({
       url: App.host_addr + "/" + type + "/" + uid + "/",
       method: "GET",
       headers: {
         "Authorization": token
       }
-    }).success(function(data) {
-      return callback(data);
+    }).success(function(data2) {
+      console.log(data2.name);
+      callback(data2);
     });
   };
   inviteFriend = function(token, friend_id, callback) {

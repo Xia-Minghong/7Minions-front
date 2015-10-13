@@ -1,4 +1,4 @@
-App.controllers.controller 'userCtrl', ($scope, $state, $stateParams, $ionicHistory, User) ->
+App.controllers.controller 'userCtrl', ($scope, $state, $stateParams, $ionicHistory, $ionicPopup, User) ->
 
   $scope.inviteFriend = ->
     User.inviteFriend $scope.userData.token, 1, (data) ->
@@ -15,7 +15,10 @@ App.controllers.controller 'userCtrl', ($scope, $state, $stateParams, $ionicHist
         return
     else
       User.getProfile $scope.userData.token, $stateParams.userId, $stateParams.userType, (data) ->
+        console.log($stateParams.userId)
+        console.log("else")
         $scope.profileData = data
+        console.log("data"+data.name)
         return
     return
 
@@ -51,4 +54,21 @@ App.controllers.controller 'userCtrl', ($scope, $state, $stateParams, $ionicHist
     $state.go(dest)
     return
 
+  $scope.addFriend = () ->
+    console.log("add"+$stateParams.userId)
+    User.addFriend $scope.userData.token, $stateParams.userId, (response) ->
+      if response
+        alertPopup = $ionicPopup.alert(
+          title: 'Friend Added'
+          template: 'Friend Added')
+        alertPopup.show()
+        return
+      else
+        console.log(response)
+      return
+    return
+
   return
+
+
+

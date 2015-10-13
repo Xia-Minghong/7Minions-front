@@ -66,14 +66,19 @@ App.services.factory 'User', ($http) ->
   getProfile = (token, uid, type, callback) ->
     if uid == "0"
       uid = "me"
+    console.log(uid)
+    console.log(type)
+    console.log(App.host_addr + "/"+type+"/"+uid+"/")
     $http(
       url: App.host_addr + "/"+type+"/"+uid+"/"
       method: "GET"
       headers:
         "Authorization":token
     )
-    .success (data) ->
-      callback(data)
+    .success (data2) ->
+      console.log(data2.name)
+      callback(data2)
+      return
 
 
   inviteFriend = (token, friend_id, callback) ->

@@ -123,9 +123,9 @@
     <div class="gem-friend-grid clearfix">
 
       <!-- Friend List Item  -->
-      <div class="friend-item" ng-repeat="participant in event.participants">
+      <div class="friend-item" ng-repeat="participant in event.registered_participants">
         <!-- Round Image here. Fluid width and Colored ring stating status -->
-        <img src="{{participant.img_url}}" alt="" class="gem-friend-list-profile-pic">
+        <a href="#/app/profile/{{participant.user.id}}/students"><img src="{{participant.img_url}}" alt="" class="gem-friend-list-profile-pic"></a>
         <!-- Online Status Icon -->
         <div class="online-status"><i class="icon ion-record gem-color-default"></i> Offline</div>
         <!-- Friend name -->
