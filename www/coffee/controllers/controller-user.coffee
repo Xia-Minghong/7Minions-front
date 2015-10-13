@@ -58,6 +58,9 @@ App.controllers.controller 'userCtrl', ($scope, $state, $stateParams, $ionicHist
     console.log("add"+$stateParams.userId)
     User.addFriend $scope.userData.token, $stateParams.userId, (response) ->
       if response
+        User.getProfile $scope.userData.token, $stateParams.userId, "students", (data) ->
+          $scope.userData.friends.push(data)
+          return
         alertPopup = $ionicPopup.alert(
           title: 'Friend Added'
           template: 'Friend Added')

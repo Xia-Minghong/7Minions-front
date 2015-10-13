@@ -140,7 +140,7 @@ App.controllers = angular.module('starter.controllers', []);
 
 App.services = angular.module('starter.services', []);
 
-App.host_addr = "http://localhost:8000";
+App.host_addr = "http://128.199.130.155";
 
 App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $state, $timeout, $location, User) {
   $scope.goBack = function() {
@@ -472,6 +472,9 @@ App.controllers.controller('userCtrl', function($scope, $state, $stateParams, $i
     User.addFriend($scope.userData.token, $stateParams.userId, function(response) {
       var alertPopup;
       if (response) {
+        User.getProfile($scope.userData.token, $stateParams.userId, "students", function(data) {
+          $scope.userData.friends.push(data);
+        });
         alertPopup = $ionicPopup.alert({
           title: 'Friend Added',
           template: 'Friend Added'
