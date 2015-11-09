@@ -140,7 +140,7 @@ App.controllers = angular.module('starter.controllers', []);
 
 App.services = angular.module('starter.services', []);
 
-App.host_addr = "http://128.199.130.155";
+App.host_addr = "http://128.199.130.155:8001";
 
 App.controllers.controller('AppCtrl', function($scope, $ionicPlatform, $ionicModal, $ionicPopup, $ionicHistory, $state, $timeout, $location, User) {
   $scope.goBack = function() {
